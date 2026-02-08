@@ -1,5 +1,3 @@
-
-
  
 <!DOCTYPE html>
 <meta charset="UTF-8">
@@ -1141,9 +1139,16 @@ background-color: #ffffff;
 border-radius: 20px;
 box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
 padding: 40px;
+width: 100% !important; /* Chiếm 90% màn hình thiết bị */
+    max-width: 600px; /* Nhưng không quá 600px trên máy tính */
+    min-width: 300px !important; /* Đảm bảo không vỡ trên điện thoại nhỏ */
+    margin: 0 auto; /* Căn giữa */
+
+
 width: 100%;
 min-width: 500px; 
-width: auto !important;
+
+
 text-align: center;
 position: relative;
 overflow: hidden;
@@ -1491,6 +1496,9 @@ border: 2px solid #000;
 .chinese {
 margin-bottom: 10px;
 font-size: 72px;
+font-size: clamp(60px, 15vw, 90px); /
+
+min-width: auto
 color: #2f3542;
 font-weight: bold;
 position: relative;
@@ -1499,7 +1507,7 @@ font-family: "Microsoft YaHei", "SimHei", sans-serif;
 transition: none;
 padding: 10px 40px; /* Thêm padding dọc để tạo không gian */
 display: inline-block;
-min-width: 250px; 
+width: 100%;
 
 }
 .chinese-intro {
@@ -1554,7 +1562,7 @@ will-change: transform, opacity;
 position: fixed;
 left: 50%;
 transform: translateX(-50%);
-width: 90%;
+width: 95%;
 max-width: 450px;
 padding: 0 0 15px;
 z-index: 801;
@@ -1577,14 +1585,148 @@ padding: 20px;
 font-size: 43px;
 border: 3px solid #e0e0e0; 
 border-radius: 12px;
-height: 70px;
+height: 55px;
 text-align: center;
 outline: none;
 background: #f8f9fa;
 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 
 }
+@media screen and (max-width: 768px) {
+    
+    /* Căn chỉnh body để không bị cuộn ngang */
+    body {
+        padding: 10px;
+        align-items: flex-start; /* Để nội dung bắt đầu từ trên cùng */
+        padding-top: 60px; /* Chừa chỗ cho thanh tiến trình/tiêu đề */
+        overflow-y: auto; /* Cho phép cuộn dọc */
+        height: auto;
+        min-height: 100vh;
+    }
 
+    /* Ẩn bớt các trang trí rườm rà */
+    .decor { opacity: 0.02; transform: scale(0.5); }
+    
+    /* Sidebar bài học: Chuyển thành thanh ngang ở trên hoặc ẩn vào menu */
+    .lesson-sidebar {
+        display: none !important; /* Tạm ẩn trên mobile để đỡ rối, truy cập qua nút Catalog */
+    }
+    
+    /* Phân tích bộ thủ: Đưa xuống dưới chữ Hán thay vì treo lơ lửng bên phải */
+    .radical-analysis {
+        position: static; /* Không dùng fixed nữa */
+        transform: none;
+        width: 100%;
+        margin-top: 20px;
+        background: rgba(255,255,255,0.8);
+        box-shadow: none;
+        border: 1px dashed #ccc;
+    }
+    
+    /* Các nút chức năng (Từ điển, Thêm từ, Cài đặt): Dồn xuống đáy hoặc thu nhỏ */
+    .dictionary-section { bottom: 80px; right: 10px; }
+    .add-word-section { bottom: 20px; right: 10px; }
+    .open-catalog-btn { bottom: 140px; right: 10px; }
+    #darkModeToggle { bottom: 200px; right: 10px; width: 40px; height: 40px; font-size: 20px; }
+
+    /* Thanh tiến trình thời gian */
+    .time-bar-container {
+        top: 0;
+        border-radius: 0;
+        width: 100%;
+        border: none;
+    }
+
+    /* Tiêu đề bài học hiện tại */
+    .current-lesson-title {
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    /* Chỉ báo Pinyin (các ô vuông) */
+    .pinyin-indicator {
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        justify-content: center;
+    }
+    .pinyin-box {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+
+    /* Khu vực hiển thị từ (Chữ Hán + Nghĩa) */
+    .word-display {
+        margin: 10px 0;
+        min-height: 200px;
+        gap: 15px;
+    }
+    
+    .vietnamese {
+        font-size: 20px;
+        word-wrap: break-word; /* Xuống dòng nếu quá dài */
+    }
+    
+    .next-word-preview {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Khu vực nhập liệu (Input) */
+    .input-area {
+        bottom: 20px !important; /* Cố định ở dưới */
+        width: 95%;
+        padding: 0;
+    }
+    
+    #chineseInput {
+        font-size: 24px;
+        height: 50px;
+        padding: 10px;
+    }
+
+    /* Modal (Từ điển, Thêm từ) */
+    .dictionary-content, .add-word-content {
+        width: 95%;
+        max-height: 85vh;
+        padding: 15px;
+    }
+    
+    .dictionary-words {
+        grid-template-columns: 1fr; /* 1 cột trên mobile */
+    }
+    
+    /* Kết quả chiến thắng */
+    .result-container.victory {
+        min-width: auto;
+        width: 95%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .result-title { font-size: 36px; }
+    .high-score { font-size: 24px; }
+    
+    /* Bảng các bài học đặc biệt */
+    .special-lessons {
+        width: 95%;
+        overflow-x: auto; /* Cho phép cuộn ngang nếu màn hình quá bé */
+        padding: 10px;
+        bottom: 10px;
+    }
+    
+    .special-lesson-btn {
+        min-width: 80px;
+        min-height: 60px;
+        font-size: 14px;
+    }
+}
 #chineseInput:focus {
   box-shadow: 0 0 0 3px rgba(200, 200, 200, 0.3); 
 }
@@ -1809,11 +1951,16 @@ margin-bottom: 30px;
 }
 
 .lessons-container {
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-gap: 7.5px;
-margin: 20px auto;
-max-width: 500px;
+    display: grid;
+    /* Tự động tính số cột, mỗi cột tối thiểu 60px */
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); 
+    gap: 10px;
+    max-width: 100%;
+}
+.dictionary-btn, .add-word-btn, .open-catalog-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
 }
 .current-lesson-title {
 position: fixed;
@@ -2925,7 +3072,36 @@ document.addEventListener('DOMContentLoaded', function() {
 // Cho phép nhấn Enter để xác nhận
 });
 
+// Tối ưu hóa cho bàn phím ảo trên mobile
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    const inputField = document.getElementById('chineseInput');
+    
+    inputField.addEventListener('focus', function() {
+        // Khi bàn phím hiện lên, ẩn bớt các thành phần không cần thiết để tiết kiệm diện tích
+        document.querySelector('.dictionary-section').style.display = 'none';
+        document.getElementById('addWordSection').style.display = 'none';
+        document.getElementById('openCatalogBtn').style.display = 'none';
+        document.getElementById('darkModeToggle').style.display = 'none';
+        
+        // Đẩy ô input lên cao hơn một chút nếu cần
+        document.querySelector('.input-area').style.bottom = '10px';
+    });
 
+    inputField.addEventListener('blur', function() {
+        // Khi đóng bàn phím, hiện lại các nút
+        setTimeout(() => {
+             // Kiểm tra xem có đang trong game không
+             if(document.getElementById('gameScreen').style.display !== 'none'){
+                 // Không hiện lại sidebar trong game trên mobile
+             } else {
+                 document.querySelector('.dictionary-section').style.display = 'block';
+                 document.getElementById('addWordSection').style.display = 'block';
+                 document.getElementById('openCatalogBtn').style.display = 'block';
+             }
+             // Dark mode toggle và các nút khác có thể hiện lại tùy logic của bạn
+        }, 200);
+    });
+}
 
 // Phần JavaScript hiện tại của bạn giữ nguyên
 function saveDataToStorage() {
