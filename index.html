@@ -1,52 +1,246 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
+<html lang="vi" style="-webkit-user-select: none; -webkit-touch-callout: none;"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Quản lý mã cân</title>
+    <title>Ứng dụng Bảng Cân - Quản lý mã cân</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f5f7;
-            padding: 16px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+
+        }
+        
+
+
+.back-button {
+    background: #e9eef2;
+    border: none;
+    border-radius: 40px;
+    padding: 16px 15px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+        
+        .date-container {
+            width: 100%;
+            background: white;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 15px 15px 15px 15px;
+
+        }
+
+        .date-card {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #f0f4f0 0%, #e0ece0 100%);
+
+            border: 1px solid #C8E6C9;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .date-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
+        
+        .date-card.today {
+    background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%) !important;
+    border: 2px solid #f97316 !important;
+        }
+              .date-card.today:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+        }
+        
+        .day-of-week {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .solar-date {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .menu-btn {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #7f8c8d;
+            padding: 5px;
+            border-radius:15%;
+            transition: background 0.3s;
+        }
+        
+        .menu-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+.add-date-card {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px dashed #81c784;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 200px;
+    min-width: 200px;
+ 
+}
+
+.add-date-card:hover {
+    background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+    border-color: #4caf50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.add-date-icon {
+    color: #2e7d32;
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+
+        
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .password-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .password-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .password-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .confirm-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .cancel-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        /* Phần Quản lý mã cân (ẩn ban đầu) */
+        #management-container {
+            display: none;
+        }
+
         .app-container {
-            max-width: 1000px;
-            margin: 0 auto;
             width: 100%;
             background: white;
             border-radius: 32px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
-            padding: 20px 16px 80px 16px;
+            padding: 15px 15px 15px 15px;
             position: relative;
         }
-        h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 20px;
-            padding-left: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        /* Thanh tab */
+        
         .tab-bar {
             display: flex;
             gap: 12px;
             margin-bottom: 24px;
         }
+        
         .tab-btn {
             flex: 1;
             background: #e9eef2;
@@ -64,15 +258,16 @@
             gap: 8px;
             -webkit-tap-highlight-color: transparent;
         }
+        
         .tab-btn i {
             font-size: 1.4rem;
         }
+        
         .tab-btn.active {
             background: #2d6a4f;
             color: white;
         }
 
-        /* Thanh công cụ cho tab Mã cân */
         .toolbar {
             display: flex;
             justify-content: space-between;
@@ -81,6 +276,7 @@
             flex-wrap: wrap;
             gap: 12px;
         }
+        
         .sort-controls {
             display: flex;
             gap: 8px;
@@ -88,6 +284,7 @@
             padding: 6px;
             border-radius: 40px;
         }
+        
         .sort-btn {
             background: transparent;
             border: none;
@@ -99,43 +296,48 @@
             cursor: pointer;
             transition: 0.2s;
         }
+        
         .sort-btn.active {
             background: #2d6a4f;
             color: white;
         }
+        
         .sort-btn i {
             margin-right: 6px;
         }
 
-        /* Badge thống kê */
-.stats-badge {
-    background: #f1f5f9;
-    border-radius: 40px;
-    padding: 10px 20px;        /* tăng padding để cân đối với chữ to */
-    font-size: 2rem;         /* tăng kích thước chữ */
-    font-weight: 700;          /* làm đậm hơn một chút */
-    color: #1e293b;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;                 /* tăng khoảng cách giữa icon và text */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-    border: 1px solid #e2e8f0;
-}
-
-.stats-badge i {
-    color: #2d6a4f;
-    font-size: 1.5rem;         /* icon to hơn tương ứng */
-}
-
-        /* Lưới hiển thị mã cân */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
-            max-height: 70vh;
-            overflow-y: auto;
-            padding: 4px 2px;
+        .stats-badge {
+            background: #f1f5f9;
+            border-radius: 40px;
+            padding: 10px 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
         }
+
+        .stats-badge i {
+            color: #2d6a4f;
+            font-size: 1.5rem;
+        }
+.grid-container.ma-can {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+.grid-container.nguoi-mua {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
         .weight-card {
             background: #ffffff;
             border-radius: 20px;
@@ -148,63 +350,96 @@
             gap: 8px;
             transition: 0.2s;
         }
+        
         .weight-card:active {
             transform: scale(0.98);
             background: #f8fafc;
         }
+        
         .weight-code {
             font-size: 1.8rem;
             color: #2d6a4f;
             min-width: 24px;
             text-align: left;
         }
+        
         .weight-sep {
             font-size: 1.8rem;
             color: #2d6a4f;
         }
+        
         .grid-container.hide-code .weight-code,
         .grid-container.hide-code .weight-sep {
             display: none;
         }
+        
         .grid-container.hide-code .weight-card {
             justify-content: center;
         }
+        
         .weight-value {
             font-size: 2rem;
             font-weight: 700;
             color: #0f172a;
             line-height: 1.2;
         }
+        
         .weight-unit {
             font-size: 0.9rem;
             color: #64748b;
             margin-left: 2px;
         }
 
-        /* Danh sách người mua dạng card cũ (giữ nguyên) */
         .list-container {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
+        
         .card {
             background: #ffffff;
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+            min-width: 140px;
+            flex: 1;
         }
+        .add-card {
+            background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
+            border: 2px dashed #f97316;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            min-width: 140px;
+            flex: 1;
+        }
+        
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
         }
+        
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: #0f172a;
         }
+        
         .card-badge {
             background: #d9f99d;
             color: #3f6212;
@@ -213,6 +448,7 @@
             font-weight: 600;
             font-size: 1rem;
         }
+        
         .card-detail {
             display: flex;
             flex-wrap: wrap;
@@ -221,10 +457,12 @@
             color: #334155;
             font-size: 1.1rem;
         }
+        
         .card-detail i {
             width: 24px;
             color: #2d6a4f;
         }
+        
         .card-footer {
             display: flex;
             justify-content: space-between;
@@ -234,6 +472,7 @@
             margin-top: 8px;
             color: #64748b;
         }
+        
         .contact-btn {
             background: #2d6a4f;
             color: white;
@@ -248,31 +487,6 @@
             cursor: pointer;
         }
 
-        /* Nút thêm nổi */
-        .fab {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #2d6a4f;
-            color: white;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 6px 16px rgba(0,80,50,0.3);
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-            z-index: 100;
-        }
-        .fab:active {
-            transform: scale(0.95);
-        }
-
-        /* Overlay và popup (giữ nguyên) */
         .overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -280,6 +494,7 @@
             z-index: 150;
             display: none;
         }
+        
         .overlay.active {
             display: block;
         }
@@ -298,12 +513,15 @@
             z-index: 200;
             display: none;
         }
+        
         .form-popup.active {
             display: block;
         }
+        
         .form-group {
             margin-bottom: 20px;
         }
+        
         .form-group label {
             display: block;
             font-weight: 600;
@@ -311,6 +529,7 @@
             color: #1e293b;
             font-size: 1.1rem;
         }
+        
         .form-group input {
             width: 100%;
             padding: 16px;
@@ -319,6 +538,7 @@
             border-radius: 24px;
             background: #f8fafc;
         }
+        
         .btn-submit {
             background: #2d6a4f;
             color: white;
@@ -331,6 +551,7 @@
             margin-top: 10px;
             cursor: pointer;
         }
+        
         .btn-cancel {
             background: #e2e8f0;
             color: #1e293b;
@@ -343,7 +564,6 @@
             cursor: pointer;
         }
 
-        /* Máy tính popup */
         .calc-popup {
             position: fixed;
             top: 50%;
@@ -358,9 +578,11 @@
             z-index: 200;
             display: none;
         }
+        
         .calc-popup.active {
             display: block;
         }
+        
         .calc-display {
             background: #f1f5f9;
             padding: 20px;
@@ -369,23 +591,27 @@
             margin-bottom: 20px;
             min-height: 90px;
         }
+        
         .calc-expression {
             font-size: 1.2rem;
             color: #475569;
             word-break: break-all;
         }
+        
         .calc-result {
             font-size: 2.2rem;
             font-weight: 700;
             color: #0f172a;
             margin-top: 4px;
         }
+        
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
+        
         .calc-btn {
             background: #e9eef2;
             border: none;
@@ -398,18 +624,22 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             transition: 0.1s;
         }
+        
         .calc-btn.operator {
             background: #fed7aa;
             color: #7b341e;
         }
+        
         .calc-btn.equals {
             background: #2d6a4f;
             color: white;
             grid-column: span 2;
         }
+        
         .calc-btn:active {
             opacity: 0.7;
         }
+        
         .calc-description {
             width: 100%;
             padding: 16px;
@@ -419,10 +649,12 @@
             margin-bottom: 16px;
             background: #f8fafc;
         }
+        
         .calc-actions {
             display: flex;
             gap: 12px;
         }
+        
         .calc-save {
             flex: 2;
             background: #2d6a4f;
@@ -438,6 +670,7 @@
             justify-content: center;
             gap: 8px;
         }
+        
         .calc-cancel {
             flex: 1;
             background: #e2e8f0;
@@ -452,46 +685,597 @@
             justify-content: center;
             gap: 8px;
         }
+        
+.header-tab-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.header-tab-container .tab-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+}
+
+.header-tab-container .page-title {
+    margin: 0;
+    flex-shrink: 0;
+    text-align: right;
+    font-size: 1.8rem;
+    min-width: 0;
+}
+.items-count {
+    font-size: 0.8rem;
+    color: #2d6a4f;
+    font-weight: 600;
+    margin-top: 4px;
+    background: rgba(45, 106, 79, 0.1);
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.items-count.high-count {
+    background: rgba(45, 106, 79, 0.2);
+    color: #1b4332;
+    font-weight: 700;
+}
+/* Thêm vào cuối phần style */
+.date-picker-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.date-picker-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.date-picker-input {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.date-picker-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.date-picker-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.date-picker-confirm {
+    background: #3498db;
+    color: white;
+}
+
+.date-picker-cancel {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Thêm CSS cho nút thêm mã cân mới */
+/* NÚT THÊM MÃ CÂN - ĐỔI THÀNH MÀU CAM */
+.add-weight-card {
+    background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%) !important;
+    border: 2px dashed #f97316 !important;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.add-weight-card:hover {
+    background: linear-gradient(135deg, #fef3c7 0%, #fdba74 100%) !important;
+    border-color: #ea580c !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.add-weight-icon {
+    color: #ea580c;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+}
+        
+        .grid-container.hide-code .add-weight-card {
+            justify-content: center;
+        }
+
+        /* CSS cho phần người mua mới */
+        .buyer-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: 0.2s;
+            min-width: 250px;
+            min-height: 250px;
+            flex: 1;
+        }
+
+        .buyer-card:active {
+            transform: scale(0.98);
+            background: #f8fafc;
+        }
+
+        .buyer-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .buyer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 1rem;
+            color: #334155;
+        }
+
+        .buyer-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .buyer-label {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .buyer-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+.add-buyer-card {
+    background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
+    border: 2px dashed #f97316;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    min-width: 200px;
+    flex: 1;
+}
+
+.add-buyer-card:hover {
+    background: linear-gradient(135deg, #fef3c7 0%, #fdba74 100%);
+    border-color: #ea580c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.add-buyer-icon {
+    color: #ea580c;
+    font-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+}
+/* CSS cho phần tách bảng */
+.common-header {
+    background: #f8f9fa;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.weighing-codes-section {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.weighing-codes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.weighing-codes-grid.hide-code .weight-code,
+.weighing-codes-grid.hide-code .weight-sep {
+    display: none;
+}
+
+.weighing-codes-grid.hide-code .weight-card {
+    justify-content: center;
+}
+
+.add-code-btn {
+    width: 100%;
+    padding: 15px;
+    background: #2d6a4f;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.3s;
+}
+
+.add-code-btn:hover {
+    background: #245c43;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.total-stats {
+    display: flex;
+    gap: 10px;
+}
+
+/* CSS cho bảng mã cân mới */
+.ma-can-table {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+     border: 1px solid #e0e0e0;
+}
+
+.table-header {
+    background: linear-gradient(135deg, #38a169 0% ,#48bb78   100%);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.table-stats {
+    display: flex;
+    gap: 15px;
+    color: white;
+    font-weight: 500;
+}
+.table-stat {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 15px;
+}
+
+
+.table-title-input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: auto;
+    min-width: 200px;
+}
+
+.table-title-input:focus {
+    background: rgba(255,255,255,0.2);
+    outline: none;
+}
+
+.table-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.table-action-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.table-action-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.add-table-section {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.add-table-card {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px dashed #81c784;
+    border-radius: 20px;
+    padding: 40px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 150px;
+    width: 100%;
+}
+
+.add-table-card:hover {
+    background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+    border-color: #4caf50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.add-table-icon {
+    color: #2e7d32;
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    margin-bottom: 10px;
+}
+
+.add-table-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+
+.weighing-codes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.purchase-stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .purchase-stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .purchase-stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .purchase-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2d6a4f;
+        }
+
+        .purchase-stat-input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .average-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
+            border-radius: 15px;
+            border: 1px solid #f97316;
+        }
+
+        .average-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .average-label {
+            font-size: 1rem;
+            color: #7c2d12;
+            font-weight: 600;
+        }
+
+        .average-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ea580c;
+        }
+
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <h1>
-            <i class="fas fa-weight-scale" style="color:#2d6a4f;"></i> 
-            Quản lý cân & người mua
-        </h1>
-        
-        <!-- Thanh tab -->
-<!-- Thanh tab (đã sửa) -->
-<div class="tab-bar">
-    <button class="tab-btn active" data-tab="maCan"><i class="fas fa-weight-hanging"></i> Mã cân</button>
-    <button class="tab-btn" data-tab="nguoiMua"><i class="fas fa-users"></i> Người mua</button>
+    
+    <!-- Màn hình chính - Danh sách ngày -->
+    <div class="container" id="main-container" style="display: block;">
+        <div class="date-container">
+            <!-- Các ngày hiển thị bình thường -->
+            <div class="date-card" data-date="2026-02-25">
+                <button class="menu-btn">⋯</button>
+                <div class="day-of-week">Thứ Tư</div>
+                <div class="solar-date">25/02/2026</div>
+                <div class="items-count">2 con</div>
+            </div>
+            
+            <div class="date-card" data-date="2026-02-26">
+                <button class="menu-btn">⋯</button>
+                <div class="day-of-week">Thứ Năm</div>
+                <div class="solar-date">26/02/2026</div>
+                 <div class="items-count">3 con</div>
+            </div>
+            
+            <div class="date-card" data-date="2026-02-27">
+                <button class="menu-btn">⋯</button>
+                <div class="day-of-week">Thứ Sáu</div>
+                <div class="solar-date">27/02/2026</div>
+                 <div class="items-count">10 con</div>
+            </div>
+            
+            <!-- Nút thêm ngày mới -->
+            <div class="add-date-card" id="addDateBtn">
+    <div class="add-date-icon">
+        <i class="fas fa-plus"></i>
+    </div>
 </div>
 
-        <!-- Khu vực hiển thị nội dung (sẽ được thay bằng grid khi là mã cân) -->
+        </div>
+    </div>
+<!-- Modal chọn ngày -->
+<div class="date-picker-modal" id="datePickerModal">
+    <div class="date-picker-content">
+        <h3>Chọn ngày muốn thêm</h3>
+        <input type="date" class="date-picker-input" id="datePickerInput">
+        <div class="date-picker-buttons">
+            <button class="date-picker-btn date-picker-cancel" id="datePickerCancel">Hủy</button>
+            <button class="date-picker-btn date-picker-confirm" id="datePickerConfirm">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="management-container" style="display: none;">  
+    <div class="app-container">
+        <!-- Header và tab trên cùng một hàng -->
+        <div class="header-tab-container">
+            <button class="back-button" id="backButton">
+                <i class="fas fa-arrow-left"></i> Trở lại
+            </button>
+
+            <div class="tab-bar">
+                <button class="tab-btn active" data-tab="maCan"><i class="fas fa-weight-hanging"></i> Mã cân</button>
+                <button class="tab-btn" data-tab="nguoiMua"><i class="fas fa-users"></i> Người mua</button>
+            </div>
+            
+            <h1 class="page-title">
+                <i class="fas fa-weight-scale" style="color:#2d6a4f;"></i> 
+                <span id="currentDateDisplay">27/02/2026</span>
+            </h1>
+        </div>
+
+        <!-- Khu vực hiển thị nội dung -->
         <div id="content-area"></div>
     </div>
+</div>
 
-    <!-- Nút thêm nổi -->
-    <button class="fab" id="fabBtn"><i class="fas fa-plus"></i></button>
+    
+
+    <!-- Modal nhập mật khẩu -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-content">
+            <h3>Xác nhận</h3>
+            <p>Vui lòng nhập mật khẩu để xóa mục này:</p>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Nhập mật khẩu">
+            <div class="password-buttons">
+                <button class="password-btn cancel-btn" id="cancelBtn">Hủy</button>
+                <button class="password-btn confirm-btn" id="confirmBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
 
     <!-- Form thêm người mua -->
-    <div class="form-popup" id="formNguoiMua">
+<div class="form-popup" id="formNguoiMua">
         <h2 style="margin-bottom: 20px;">➕ Thêm người mua</h2>
         <div class="form-group">
-            <label>Tên người mua / Công ty</label>
+            <label>Tên người mua</label>
             <input type="text" id="tenInput" placeholder="VD: Trang trại Hoa Mai">
         </div>
         <div class="form-group">
-            <label>Địa điểm</label>
-            <input type="text" id="diaDiemInput" placeholder="Tỉnh / Huyện">
+            <label>Dự kiến bán (kg)</label>
+            <input type="number" id="duKienBanInput" placeholder="Số kg dự kiến">
         </div>
         <div class="form-group">
-            <label>Liên hệ</label>
-            <input type="text" id="lienHeInput" placeholder="SĐT hoặc Zalo">
+            <label>Đã bán (kg)</label>
+            <input type="number" id="daBanInput" placeholder="Số kg đã bán">
+        </div>
+        <div class="form-group">
+            <label>Giá bán (đồng/kg)</label>
+            <input type="number" id="giaBanInput" placeholder="Giá mỗi kg">
         </div>
         <button class="btn-submit" id="submitNguoiMua"><i class="fas fa-save"></i> Lưu người mua</button>
         <button class="btn-cancel" id="cancelNguoiMua">Hủy</button>
@@ -531,140 +1315,779 @@
     </div>
 
     <script>
-        // Dữ liệu
-        let data = {
-            nguoiMua: [
-                { id: 1, name: 'Công ty Vissan', location: 'TP.HCM', contact: '0283xxxxxx' },
-                { id: 2, name: 'Lò mổ Đức Hạnh', location: 'Đồng Nai', contact: '0251xxxxxx' },
-                { id: 3, name: 'Anh Tùng (thương lái)', location: 'Bắc Giang', contact: '0972xxxxxx' }
-            ],
-            maCan: [
-                { id: 1, code: '1', weight: 185 },
-                { id: 2, code: '2', weight: 176 },
-                { id: 3, code: '3', weight: 192 },
-                { id: 4, code: '4', weight: 168 },
-                { id: 5, code: '5', weight: 105 },
-                { id: 6, code: '6', weight: 179 },
-                { id: 7, code: '7', weight: 188 },
-                { id: 8, code: '8', weight: 171 },
-                { id: 9, code: '9', weight: 195 },
-                { id: 10, code: '10', weight: 182 }
-            ]
-        };
-
+let currentTableId = 1;
+let dataByDate = {
+    "2026-02-25": {
+        nguoiMua: [
+            { id: 1, name: 'Công ty Vissan', duKienBan: 500, daBan: 480, giaBan: 85000 }
+        ],
+        bangMaCan: [
+            { 
+                id: 1, 
+                title: 'Nhà số 1', 
+                maCan: [
+                    { id: 1, code: '1', weight: 185 },
+                    { id: 2, code: '2', weight: 176 }
+                ]
+            }
+        ]
+    },
+    "2026-02-26": {
+        nguoiMua: [
+            { id: 1, name: 'Lò mổ Đức Hạnh', duKienBan: 300, daBan: 300, giaBan: 82000 },
+            { id: 2, name: 'Anh Tùng (thương lái)', duKienBan: 200, daBan: 180, giaBan: 83000 }
+        ],
+        bangMaCan: [
+            { 
+                id: 1, 
+                title: 'Nhà số 1', 
+                maCan: [
+                    { id: 1, code: '1', weight: 192 },
+                    { id: 2, code: '2', weight: 168 },
+                    { id: 3, code: '3', weight: 105 }
+                ]
+            }
+        ]
+    },
+    "2026-02-27": {
+        nguoiMua: [
+            { id: 1, name: 'Công ty Vissan', duKienBan: 600, daBan: 550, giaBan: 86000 },
+            { id: 2, name: 'Lò mổ Đức Hạnh', duKienBan: 400, daBan: 400, giaBan: 84000 },
+            { id: 3, name: 'Anh Tùng (thương lái)', duKienBan: 250, daBan: 200, giaBan: 83500 }
+        ],
+        bangMaCan: [
+            { 
+                id: 1, 
+                title: 'Nhà số 1', 
+                maCan: [
+                    { id: 1, code: '1', weight: 185 },
+                    { id: 2, code: '2', weight: 176 },
+                    { id: 3, code: '3', weight: 192 },
+                    { id: 4, code: '4', weight: 168 },
+                    { id: 5, code: '5', weight: 105 },
+                    { id: 6, code: '6', weight: 179 },
+                    { id: 7, code: '7', weight: 188 },
+                    { id: 8, code: '8', weight: 171 },
+                    { id: 9, code: '9', weight: 195 },
+                    { id: 10, code: '10', weight: 182 }
+                ]
+            }
+        ]
+    }
+};
+        let deleteType = null;
+        let itemToDelete = null;
         let currentTab = 'maCan';
         let sortMode = 'code-asc';
         let hideCode = false;
+        let currentSelectedDate = '2026-02-27'; 
+        let dateToDelete = null;
 
-        // Hàm sắp xếp mã cân
-        function sortMaCan(items, mode) {
-            const sorted = [...items];
-            switch(mode) {
-                case 'code-asc':
-                    sorted.sort((a, b) => Number(a.code) - Number(b.code));
-                    break;
-                case 'code-desc':
-                    sorted.sort((a, b) => Number(b.code) - Number(a.code));
-                    break;
-                case 'weight-asc':
-                    sorted.sort((a, b) => a.weight - b.weight);
-                    break;
-                case 'weight-desc':
-                    sorted.sort((a, b) => b.weight - a.weight);
-                    break;
-                default:
-                    break;
-            }
-            return sorted;
+        // DOM Elements
+        const mainContainer = document.getElementById('main-container');
+        const managementContainer = document.getElementById('management-container');
+        const backButton = document.getElementById('backButton');
+        const addDateBtn = document.getElementById('addDateBtn');
+        const passwordModal = document.getElementById('passwordModal');
+        const passwordInput = document.getElementById('passwordInput');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const formNguoiMua = document.getElementById('formNguoiMua');
+        const overlay = document.getElementById('overlay');
+        const cancelNguoiMua = document.getElementById('cancelNguoiMua');
+        const submitNguoiMua = document.getElementById('submitNguoiMua');
+        const calcPopup = document.getElementById('calcPopup');
+        const calcExpression = document.getElementById('calcExpression');
+        const calcResult = document.getElementById('calcResult');
+        const calcClear = document.getElementById('calcClear');
+        const calcEquals = document.getElementById('calcEquals');
+        const calcSave = document.getElementById('calcSave');
+        const calcCancel = document.getElementById('calcCancel');
+        const calcDescription = document.getElementById('calcDescription');
+function updateItemsCountDisplay() {
+    const dateCards = document.querySelectorAll('.date-card');
+    
+    dateCards.forEach(card => {
+        const date = card.getAttribute('data-date');
+        const dataForDate = dataByDate[date];
+        let totalItems = 0;
+        
+        if (dataForDate && dataForDate.bangMaCan) {
+            dataForDate.bangMaCan.forEach(bang => {
+                totalItems += bang.maCan.length;
+            });
+        }
+        
+        const countElement = card.querySelector('.items-count');
+        if (countElement) {
+            countElement.textContent = `${totalItems} con`;
+        }
+    });
+}
+
+
+
+        // Hàm lấy dữ liệu cho ngày hiện tại
+function getCurrentDateData() {
+    if (!dataByDate[currentSelectedDate]) {
+        dataByDate[currentSelectedDate] = {
+            nguoiMua: [],
+            bangMaCan: [{ id: 1, title: 'Nhà số 1', maCan: [] }]
+        };
+    }
+    return dataByDate[currentSelectedDate];
+}
+
+        // Hàm cập nhật hiển thị ngày hiện tại
+        function updateCurrentDateDisplay() {
+            const dateDisplay = document.getElementById('currentDateDisplay');
+            const dateParts = currentSelectedDate.split('-');
+            dateDisplay.textContent = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
         }
 
+        // Hàm sắp xếp mã cân
+function sortMaCan(items, mode) {
+    const sorted = [...items];
+    switch (mode) {
+        case 'code-asc':
+            return sorted.sort((a, b) => parseInt(a.code) - parseInt(b.code));
+        case 'code-desc':
+            return sorted.sort((a, b) => parseInt(b.code) - parseInt(a.code));
+        case 'weight-asc':
+            return sorted.sort((a, b) => a.weight - b.weight);
+        case 'weight-desc':
+            return sorted.sort((a, b) => b.weight - a.weight);
+        default:
+            return sorted.sort((a, b) => parseInt(a.code) - parseInt(b.code));
+    }
+}
+
         // Render danh sách
-        function renderList(tabId) {
-            const container = document.getElementById('content-area');
-            if (tabId === 'maCan') {
-                const sortedItems = sortMaCan(data.maCan, sortMode);
-                const totalWeight = sortedItems.reduce((acc, item) => acc + item.weight, 0);
+function renderList(tabId) {
+    const container = document.getElementById('content-area');
+    const currentData = getCurrentDateData();
+    
+    if (tabId === 'maCan') {
+        renderMaCanSection(container, currentData);
+    } else {
+        renderNguoiMuaSection(container, currentData);
+    }
+}
 
-                let toolbarHtml = `
-<!-- Phần toolbar đã được cập nhật trong function renderList (tab maCan) -->
-<div class="toolbar">
-    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-        <div class="sort-controls">
-            <button class="sort-btn ${sortMode === 'code-asc' ? 'active' : ''}" data-sort="code-asc"><i class="fas fa-sort-alpha-down"></i> Mã ↑</button>
-            <button class="sort-btn ${sortMode === 'code-desc' ? 'active' : ''}" data-sort="code-desc"><i class="fas fa-sort-alpha-up"></i> Mã ↓</button>
-            <button class="sort-btn ${sortMode === 'weight-asc' ? 'active' : ''}" data-sort="weight-asc"><i class="fas fa-sort-numeric-down"></i> Kg ↑</button>
-            <button class="sort-btn ${sortMode === 'weight-desc' ? 'active' : ''}" data-sort="weight-desc"><i class="fas fa-sort-numeric-up"></i> Kg ↓</button>
-            <button class="sort-btn" id="toggleCodeBtn" style="background: ${hideCode ? '#f1f5f9' : '#2d6a4f'}; color: ${hideCode ? '#334155' : 'white'};">
-                <i class="fas fa-hashtag"></i> ${hideCode ? 'Hiện số' : 'Ẩn số'}
-            </button>
-        </div>
-                            </div>
-        <div style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
-<div class="stats-badge">${sortedItems.length} Con</div>
-            <div class="stats-badge">${totalWeight} kg</div>
-        </div>
-    </div>
-</div>
-                `;
+function renderMaCanSection(container, currentData) {
+    // Tính tổng số con và tổng kg cho tất cả các bảng
+    let totalItems = 0;
+    let totalWeight = 0;
+    let allMaCan = [];
+    
+    currentData.bangMaCan.forEach(bang => {
+        totalItems += bang.maCan.length;
+        const bangWeight = bang.maCan.reduce((acc, item) => acc + item.weight, 0);
+        totalWeight += bangWeight;
+        allMaCan = allMaCan.concat(bang.maCan);
+    });
 
-                let gridContainerClass = 'grid-container' + (hideCode ? ' hide-code' : '');
-                let gridHtml = `<div class="${gridContainerClass}">`;
-                
-                sortedItems.forEach((item) => {
-                    gridHtml += `
-                        <div class="weight-card" onclick="alert('Mã ${item.code}: ${item.weight} kg')">
+    // Sắp xếp tất cả mã cân theo chế độ hiện tại
+    const sortedAllItems = sortMaCan(allMaCan, sortMode);
+
+    let sectionHtml = '';
+
+    // PHẦN HEADER CHUNG
+    sectionHtml += `
+        <div class="common-header">
+            <div class="control-buttons">
+                <div class="sort-controls">
+                    <button class="sort-btn ${sortMode === 'code-asc' ? 'active' : ''}" data-sort="code-asc">
+                        <i class="fas fa-sort-alpha-down"></i> Mã ↑
+                    </button>
+                    <button class="sort-btn ${sortMode === 'code-desc' ? 'active' : ''}" data-sort="code-desc">
+                        <i class="fas fa-sort-alpha-up"></i> Mã ↓
+                    </button>
+                    <button class="sort-btn ${sortMode === 'weight-asc' ? 'active' : ''}" data-sort="weight-asc">
+                        <i class="fas fa-sort-numeric-down"></i> Kg ↑
+                    </button>
+                    <button class="sort-btn ${sortMode === 'weight-desc' ? 'active' : ''}" data-sort="weight-desc">
+                        <i class="fas fa-sort-numeric-up"></i> Kg ↓
+                    </button>
+                    <button class="sort-btn" id="toggleCodeBtn" 
+                            style="background: ${hideCode ? '#f1f5f9' : '#2d6a4f'}; color: ${hideCode ? '#334155' : 'white'};">
+                        <i class="fas fa-hashtag"></i> ${hideCode ? 'Hiện số' : 'Ẩn số'}
+                    </button>
+                </div>
+            </div>
+            <div class="total-stats">
+                <div class="stats-badge">${totalItems} Con</div>
+                <div class="stats-badge">${totalWeight} kg</div>
+                <div class="stats-badge">${currentData.bangMaCan.length} Nhà</div>
+            </div>
+        </div>
+    `;
+
+    // Duyệt qua từng bảng mã cân
+    currentData.bangMaCan.forEach((bang, index) => {
+        // Sắp xếp mã cân trong bảng theo chế độ chung
+        const sortedItems = sortMaCan(bang.maCan, sortMode);
+        sectionHtml += createMaCanTable(bang, sortedItems, index);
+    });
+
+    // Thêm nút thêm bảng mã cân
+    sectionHtml += `
+        <div class="add-table-section">
+            <div class="add-table-card" onclick="addNewTable()">
+                <div class="add-table-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="add-table-text">Thêm bảng mã cân</div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = sectionHtml;
+    setupMaCanEventListeners();
+}
+function createMaCanTable(bang, sortedItems, tableIndex) {
+    const gridContainerClass = `weighing-codes-grid${hideCode ? ' hide-code' : ''}`;
+    const tableWeight = sortedItems.reduce((acc, item) => acc + item.weight, 0);
+
+    return `
+        <div class="ma-can-table" data-table-id="${bang.id}">
+            <!-- Tiêu đề bảng có thể chỉnh sửa -->
+            <div class="table-header">
+                <input type="text" class="table-title-input" value="${bang.title}" 
+                       onchange="updateTableTitle(${bang.id}, this.value)"
+                       placeholder="Nhập tiêu đề bảng">
+                <div class="table-stats">
+                    <span class="table-stat">${sortedItems.length} con</span>
+        
+                    <span class="table-stat">${tableWeight} kg</span>
+                </div>
+                <div class="table-actions">
+                    <button class="table-action-btn" onclick="deleteTable(${bang.id})" title="Xóa bảng">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Danh sách mã cân -->
+            <div class="weighing-codes-section">
+                <div class="${gridContainerClass}">
+                    ${sortedItems.map(item => `
+                        <div class="weight-card" onclick="showMaCanDetail(${item.code}, ${item.weight})">
                             <span class="weight-code">${item.code}</span>
                             <span class="weight-sep">-</span>
                             <span class="weight-value">${item.weight}<span class="weight-unit">kg</span></span>
                         </div>
-                    `;
-                });
-                gridHtml += '</div>';
-
-                container.innerHTML = toolbarHtml + gridHtml;
-
-                document.querySelectorAll('.sort-btn[data-sort]').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        sortMode = btn.dataset.sort;
-                        renderList('maCan');
-                    });
-                });
-
-                const toggleBtn = document.getElementById('toggleCodeBtn');
-                if (toggleBtn) {
-                    const newToggleBtn = toggleBtn.cloneNode(true);
-                    toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
-                    newToggleBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        hideCode = !hideCode;
-                        renderList('maCan');
-                    });
-                }
-            } else { // nguoiMua
-                let html = '<div class="list-container">';
-                data.nguoiMua.forEach(item => {
-                    html += `
-                        <div class="card">
-                            <div class="card-header">
-                                <span class="card-title">${item.name}</span>
-                                <span class="card-badge">Người mua</span>
-                            </div>
-                            <div class="card-detail">
-                                <div><i class="fas fa-map-marker-alt"></i> ${item.location}</div>
-                                <div><i class="fas fa-phone-alt"></i> ${item.contact}</div>
-                            </div>
-                            <div class="card-footer">
-                                <span><i class="fas fa-user"></i> Đầu mối</span>
-                                <button class="contact-btn" onclick="alert('Liên hệ: ${item.contact}')"><i class="fas fa-comment"></i> Chat</button>
-                            </div>
+                    `).join('')}
+                    
+                    <div class="add-weight-card" onclick="openCalc(${bang.id})">
+                        <div class="add-weight-icon">
+                            <i class="fas fa-plus"></i>
                         </div>
-                    `;
-                });
-                html += '</div>';
-                container.innerHTML = html;
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+function addNewTable() {
+    const currentData = getCurrentDateData();
+    const newTableId = Date.now();
+    const newTable = {
+        id: newTableId,
+        title: `Nhà số ${currentData.bangMaCan.length + 1}`,
+        maCan: []
+    };
+    
+    currentData.bangMaCan.push(newTable);
+    renderList('maCan');
+}
+function updateTableTitle(tableId, newTitle) {
+    const currentData = getCurrentDateData();
+    const table = currentData.bangMaCan.find(bang => bang.id === tableId);
+    if (table) {
+        table.title = newTitle;
+    }
+}
+      function deleteTable(tableId) {
+            showPasswordModal('table', tableId);
+        }
+
+function createMaCanHeader(itemCount, totalWeight) {
+    return `
+        <div class="common-header">
+            <h2>Mã cân</h2>
+            <div class="control-buttons">
+                <div class="sort-controls">
+                    <button class="sort-btn ${sortMode === 'code-asc' ? 'active' : ''}" data-sort="code-asc">
+                        <i class="fas fa-sort-alpha-down"></i> Mã ↑
+                    </button>
+                    <button class="sort-btn ${sortMode === 'code-desc' ? 'active' : ''}" data-sort="code-desc">
+                        <i class="fas fa-sort-alpha-up"></i> Mã ↓
+                    </button>
+                    <button class="sort-btn ${sortMode === 'weight-asc' ? 'active' : ''}" data-sort="weight-asc">
+                        <i class="fas fa-sort-numeric-down"></i> Kg ↑
+                    </button>
+                    <button class="sort-btn ${sortMode === 'weight-desc' ? 'active' : ''}" data-sort="weight-desc">
+                        <i class="fas fa-sort-numeric-up"></i> Kg ↓
+                    </button>
+                    <button class="sort-btn" id="toggleCodeBtn" 
+                            style="background: ${hideCode ? '#f1f5f9' : '#2d6a4f'}; color: ${hideCode ? '#334155' : 'white'};">
+                        <i class="fas fa-hashtag"></i> ${hideCode ? 'Hiện số' : 'Ẩn số'}
+                    </button>
+                </div>
+            </div>
+            <div class="total-stats">
+                <div class="stats-badge">${itemCount} Con</div>
+                <div class="stats-badge">${totalWeight} kg</div>
+            </div>
+        </div>
+    `;
+}
+
+function createMaCanList(items) {
+    const gridContainerClass = `weighing-codes-grid${hideCode ? ' hide-code' : ''}`;
+    
+    let gridHtml = `<div class="weighing-codes-section">`;
+    gridHtml += `<div class="${gridContainerClass}">`;
+    
+    // Thêm các item mã cân
+    items.forEach(item => {
+        gridHtml += `
+            <div class="weight-card" onclick="showMaCanDetail(${item.code}, ${item.weight})">
+                <span class="weight-code">${item.code}</span>
+                <span class="weight-sep">-</span>
+                <span class="weight-value">${item.weight}<span class="weight-unit">kg</span></span>
+            </div>
+        `;
+    });
+    
+    // Thêm nút thêm mã cân với kiểu dáng cũ (nhỏ, trong grid)
+    gridHtml += `
+        <div class="add-weight-card" onclick="openCalc()">
+            <div class="add-weight-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+    `;
+    
+    gridHtml += `</div>`;
+    gridHtml += `</div>`;
+    return gridHtml;
+}
+
+
+function createMaCanToolbar(itemCount, totalWeight) {
+    return `
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="sort-controls">
+                    <button class="sort-btn ${sortMode === 'code-asc' ? 'active' : ''}" data-sort="code-asc">
+                        <i class="fas fa-sort-alpha-down"></i> Mã ↑
+                    </button>
+                    <button class="sort-btn ${sortMode === 'code-desc' ? 'active' : ''}" data-sort="code-desc">
+                        <i class="fas fa-sort-alpha-up"></i> Mã ↓
+                    </button>
+                    <button class="sort-btn ${sortMode === 'weight-asc' ? 'active' : ''}" data-sort="weight-asc">
+                        <i class="fas fa-sort-numeric-down"></i> Kg ↑
+                    </button>
+                    <button class="sort-btn ${sortMode === 'weight-desc' ? 'active' : ''}" data-sort="weight-desc">
+                        <i class="fas fa-sort-numeric-up"></i> Kg ↓
+                    </button>
+                    <button class="sort-btn" id="toggleCodeBtn" 
+                            style="background: ${hideCode ? '#f1f5f9' : '#2d6a4f'}; color: ${hideCode ? '#334155' : 'white'};">
+                        <i class="fas fa-hashtag"></i> ${hideCode ? 'Hiện số' : 'Ẩn số'}
+                    </button>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="stats-badge">${itemCount} Con</div>
+                <div class="stats-badge">${totalWeight} kg</div>
+            </div>
+        </div>
+    `;
+}
+
+function createMaCanGrid(items, containerClass) {
+    let gridHtml = `<div class="${containerClass}">`;
+    
+    // Thêm các item mã cân
+    items.forEach(item => {
+        gridHtml += `
+            <div class="weight-card" onclick="showMaCanDetail(${item.code}, ${item.weight})">
+                <span class="weight-code">${item.code}</span>
+                <span class="weight-sep">-</span>
+                <span class="weight-value">${item.weight}<span class="weight-unit">kg</span></span>
+            </div>
+        `;
+    });
+    
+    // Thêm nút thêm mã cân
+    gridHtml += `
+        <div class="add-weight-card" onclick="openCalc()">
+            <div class="add-weight-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+    `;
+    
+    gridHtml += '</div>';
+    return gridHtml;
+}
+
+function setupMaCanEventListeners() {
+    // Xử lý sự kiện cho các nút sắp xếp
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        if (btn.id !== 'toggleCodeBtn') {
+            btn.addEventListener('click', function() {
+                const newSortMode = this.getAttribute('data-sort');
+                sortMode = newSortMode;
+                renderList('maCan');
+            });
+        }
+    });
+
+    // Xử lý sự kiện cho nút ẩn/hiện số
+    document.getElementById('toggleCodeBtn')?.addEventListener('click', function() {
+        hideCode = !hideCode;
+        renderList('maCan');
+    });
+}
+
+function renderNguoiMuaSection(container, currentData) {
+    const totalWeight = currentData.nguoiMua.reduce((acc, buyer) => acc + buyer.daBan, 0);
+    const totalRevenue = currentData.nguoiMua.reduce((acc, buyer) => acc + (buyer.daBan * buyer.giaBan), 0);
+
+    const toolbarHtml = createNguoiMuaToolbar(currentData.nguoiMua.length, totalWeight, totalRevenue);
+    const gridHtml = createNguoiMuaGrid(currentData.nguoiMua);
+
+    container.innerHTML = toolbarHtml + gridHtml;
+}
+
+function createNguoiMuaToolbar(buyerCount, totalWeight, totalRevenue) {
+    return `
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="stats-badge">
+                    <i class="fas fa-users"></i> ${buyerCount} Người mua
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="stats-badge">
+                    <i class="fas fa-weight-scale"></i> ${totalWeight} kg đã bán
+                </div>
+                <div class="stats-badge">
+                    <i class="fas fa-money-bill-wave"></i> ${formatCurrency(totalRevenue)}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createNguoiMuaGrid(buyers) {
+    let gridHtml = '<div class="grid-container nguoi-mua">';
+    
+    buyers.forEach(buyer => {
+        gridHtml += `
+            <div class="buyer-card" onclick="showBuyerDetail('${buyer.name}', ${buyer.duKienBan}, ${buyer.daBan}, ${buyer.giaBan})">
+                <div class="buyer-name">${buyer.name}</div>
+                <div class="buyer-info">
+                    <div class="buyer-info-row">
+                        <span class="buyer-label">Dự kiến:</span>
+                        <span class="buyer-value">${buyer.duKienBan} kg</span>
+                    </div>
+                    <div class="buyer-info-row">
+                        <span class="buyer-label">Đã bán:</span>
+                        <span class="buyer-value">${buyer.daBan} kg</span>
+                    </div>
+                    <div class="buyer-info-row">
+                        <span class="buyer-label">Giá:</span>
+                        <span class="buyer-value">${formatCurrency(buyer.giaBan)}/kg</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    gridHtml += `
+        <div class="add-buyer-card" onclick="openFormNguoiMua()">
+            <div class="add-buyer-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+    `;
+    
+    gridHtml += '</div>';
+    return gridHtml;
+}
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        // Hàm hiển thị màn hình quản lý
+        function showManagementScreen(date) {
+            currentSelectedDate = date;
+            updateCurrentDateDisplay();
+            renderList(currentTab);
+            mainContainer.style.display = 'none';
+            managementContainer.style.display = 'block';
+        }
+
+        // Hàm hiển thị màn hình chính
+        function showMainScreen() {
+            managementContainer.style.display = 'none';
+            mainContainer.style.display = 'block';
+        }
+
+        // Hàm kiểm tra ngày đã tồn tại chưa
+        function isDateExists(dateString) {
+            const existingDates = Array.from(document.querySelectorAll('.date-card')).map(card => 
+                card.getAttribute('data-date')
+            );
+            return existingDates.includes(dateString);
+        }
+        
+        // Hàm lấy ngày hôm nay dưới dạng yyyy-mm-dd
+        function getTodayString() {
+            const today = new Date();
+            return formatDateForAttribute(today);
+        }
+        
+        // Hàm cập nhật danh sách thẻ ngày
+function updateDateCards() {
+    // GỠ BỎ sự kiện cũ trước khi thêm mới (tránh trùng lặp)
+    document.querySelectorAll('.date-card .menu-btn').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+    });
+    
+    // Thêm sự kiện mới
+    document.querySelectorAll('.date-card .menu-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const card = this.closest('.date-card');
+            showPasswordModal('date', card);
+        });
+    });
+}
+        
+function showPasswordModal(type, item) {
+    deleteType = type;
+    itemToDelete = item;
+    
+    // Cập nhật tiêu đề và thông báo theo loại xóa
+    const title = document.querySelector('#passwordModal h3');
+    const message = document.querySelector('#passwordModal p');
+    
+    if (type === 'date') {
+        title.textContent = 'Xác nhận xóa ngày';
+        message.textContent = 'Vui lòng nhập mật khẩu để xóa ngày này:';
+    } else if (type === 'table') {
+        title.textContent = 'Xác nhận xóa bảng';
+        message.textContent = 'Vui lòng nhập mật khẩu để xóa bảng này:';
+    }
+    
+    passwordModal.style.display = 'flex';
+    passwordInput.value = '';
+    passwordInput.focus();
+}
+
+        
+        // Hàm ẩn modal nhập mật khẩu
+        function hidePasswordModal() {
+            passwordModal.style.display = 'none';
+            deleteType = null;
+            itemToDelete = null;
+        }
+        
+        // Hàm lấy thứ trong tuần
+        function getDayOfWeek(date) {
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            return days[date.getDay()];
+        }
+
+        // Hàm định dạng ngày tháng
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        function formatDateForAttribute(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+function setupDateCards() {
+    const dateCards = document.querySelectorAll('.date-card');
+    dateCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (e.target.classList.contains('menu-btn')) return;
+            
+            const date = this.getAttribute('data-date');
+            showManagementScreen(date);
+        });
+        
+        // SỬA LẠI - THÊM ĐÚNG THAM SỐ
+        const menuBtn = card.querySelector('.menu-btn');
+        menuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showPasswordModal('date', card);
+        });
+    });
+}
+
+
+        // Xử lý khi click nút thêm ngày mới
+
+addDateBtn.addEventListener('click', function() {
+    const today = new Date();
+    const todayString = formatDateForAttribute(today);
+    
+    // Kiểm tra nếu ngày hôm nay đã tồn tại
+    if (isDateExists(todayString)) {
+        // Hiển thị modal chọn ngày
+        showDatePickerModal();
+    } else {
+        // Thêm ngày hôm nay như bình thường
+        addNewDate(today);
+    }
+});
+function addNewDate(date) {
+    const formattedDate = formatDateForAttribute(date);
+    
+    // Kiểm tra ngày đã tồn tại chưa
+    if (isDateExists(formattedDate)) {
+        alert('Ngày này đã tồn tại!');
+        return false;
+    }
+    
+    const solarDate = formatDate(date);
+    const dayOfWeek = getDayOfWeek(date);
+    
+    // Tạo phần tử ngày mới
+    const newDateCard = document.createElement('div');
+    newDateCard.className = 'date-card';
+    newDateCard.setAttribute('data-date', formattedDate);
+    
+    // Kiểm tra nếu là ngày hôm nay thì thêm class today
+    const todayString = getTodayString();
+    if (formattedDate === todayString) {
+        newDateCard.classList.add('today');
+    }
+    
+    newDateCard.innerHTML = `
+        <button class="menu-btn">⋯</button>
+        <div class="day-of-week">${dayOfWeek}</div>
+        <div class="solar-date">${solarDate}</div>
+        <div class="items-count">0 con</div>
+    `;
+    
+    // Thêm sự kiện click cho thẻ mới
+    newDateCard.addEventListener('click', function(e) {
+        if (e.target.classList.contains('menu-btn')) return;
+        const date = this.getAttribute('data-date');
+        showManagementScreen(date);
+    });
+    
+    // Thêm thẻ mới vào container
+    document.querySelector('.date-container').insertBefore(newDateCard, addDateBtn);
+    
+    dataByDate[formattedDate] = {
+        nguoiMua: [],
+        bangMaCan: [{ id: 1, title: 'Nhà số 1', maCan: [] }] 
+    };
+    
+    // Cập nhật danh sách thẻ ngày
+    updateDateCards();
+    updateItemsCountDisplay();
+    sortDateCards();
+
+    return true;
+}
+
+document.getElementById('datePickerConfirm').addEventListener('click', function() {
+    const input = document.getElementById('datePickerInput');
+    const selectedDate = new Date(input.value);
+    
+    if (addNewDate(selectedDate)) {
+        hideDatePickerModal();
+    }
+});
+document.getElementById('datePickerCancel').addEventListener('click', hideDatePickerModal);
+
+// Xử lý nhấn Enter trong ô chọn ngày
+document.getElementById('datePickerInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('datePickerConfirm').click();
+    }
+});
+        // SỬA SỰ KIỆN XÁC NHẬN MẬT KHẨU
+confirmBtn.addEventListener('click', function() {
+    if (passwordInput.value === '2406') {
+        if (deleteType === 'date') {
+            // Xử lý xóa ngày - SỬA LẠI HOÀN TOÀN
+            const dateCard = itemToDelete;
+            const dateToRemove = dateCard.getAttribute('data-date');
+            
+            // Xóa thẻ ngày khỏi DOM
+            dateCard.remove();
+            
+            // Xóa dữ liệu của ngày đó
+            delete dataByDate[dateToRemove];
+            
+            // Nếu ngày bị xóa là ngày đang xem, quay lại màn hình chính
+            if (currentSelectedDate === dateToRemove) {
+                showMainScreen();
+            }
+            
+            // Cập nhật giao diện
+            updateItemsCountDisplay();
+            
+        } else if (deleteType === 'table') {
+            // Xử lý xóa bảng
+            const currentData = getCurrentDateData();
+            if (currentData.bangMaCan.length > 1) {
+                currentData.bangMaCan = currentData.bangMaCan.filter(bang => bang.id !== itemToDelete);
+                renderList('maCan');
+            } else {
+                alert('Không thể xóa bảng cuối cùng!');
             }
         }
+        
+        hidePasswordModal();
+        
+    } else {
+        alert('Mật khẩu không đúng!');
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+});
+
+
+
+        
+        // Xử lý khi click nút hủy
+        cancelBtn.addEventListener('click', function() {
+            hidePasswordModal();
+        });
+        
+        // Xử lý khi nhấn phím Enter trong ô mật khẩu
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                confirmBtn.click();
+            }
+        });
+
+        // Xử lý nút quay lại
+        backButton.addEventListener('click', function() {
+            showMainScreen();
+        });
 
         // Xử lý chuyển tab
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -675,13 +2098,45 @@
                 renderList(currentTab);
             });
         });
+function showDatePickerModal() {
+    const modal = document.getElementById('datePickerModal');
+    const input = document.getElementById('datePickerInput');
+    
+    // Đặt giá trị mặc định là ngày mai
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    input.value = formatDateForAttribute(tomorrow);
+    
+    modal.style.display = 'flex';
+    input.focus();
+}
 
+// Hàm ẩn modal chọn ngày
+function hideDatePickerModal() {
+    document.getElementById('datePickerModal').style.display = 'none';
+}
+function sortDateCards() {
+    const container = document.querySelector('.date-container');
+    const cards = Array.from(container.querySelectorAll('.date-card'));
+    const addButton = document.querySelector('.add-date-card');
+    
+    // Sắp xếp theo data-date (từ cũ đến mới)
+
+    cards.sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        return dateA - dateB;
+    });
+    
+    // Xóa tất cả thẻ ngày hiện tại
+    cards.forEach(card => container.removeChild(card));
+    
+    // Thêm lại theo thứ tự đã sắp xếp
+    cards.forEach(card => {
+        container.insertBefore(card, addButton);
+    });
+}
         // ---- Quản lý popup người mua ----
-        const formNguoiMua = document.getElementById('formNguoiMua');
-        const overlay = document.getElementById('overlay');
-        const cancelNguoiMua = document.getElementById('cancelNguoiMua');
-        const submitNguoiMua = document.getElementById('submitNguoiMua');
-
         function openFormNguoiMua() {
             overlay.classList.add('active');
             formNguoiMua.classList.add('active');
@@ -697,37 +2152,31 @@
 
         submitNguoiMua.addEventListener('click', () => {
             const ten = document.getElementById('tenInput').value.trim();
-            const diaDiem = document.getElementById('diaDiemInput').value.trim();
-            const lienHe = document.getElementById('lienHeInput').value.trim();
+            const duKienBan = parseInt(document.getElementById('duKienBanInput').value) || 0;
+            const daBan = parseInt(document.getElementById('daBanInput').value) || 0;
+            const giaBan = parseInt(document.getElementById('giaBanInput').value) || 0;
 
-            if (!ten || !diaDiem || !lienHe) {
-                alert('Vui lòng nhập đầy đủ thông tin');
+            if (!ten) {
+                alert('Vui lòng nhập tên người mua');
                 return;
             }
 
+            const currentData = getCurrentDateData();
             const newId = Date.now();
-            data.nguoiMua.push({
+            currentData.nguoiMua.push({
                 id: newId,
                 name: ten,
-                location: diaDiem,
-                contact: lienHe
+                duKienBan: duKienBan,
+                daBan: daBan,
+                giaBan: giaBan
             });
-            renderList('maCan');
+            renderList(currentTab);
             closeFormNguoiMua();
         });
 
         cancelNguoiMua.addEventListener('click', closeFormNguoiMua);
 
         // ---- Quản lý máy tính ----
-        const calcPopup = document.getElementById('calcPopup');
-        const calcExpression = document.getElementById('calcExpression');
-        const calcResult = document.getElementById('calcResult');
-        const calcClear = document.getElementById('calcClear');
-        const calcEquals = document.getElementById('calcEquals');
-        const calcSave = document.getElementById('calcSave');
-        const calcCancel = document.getElementById('calcCancel');
-        const calcDescription = document.getElementById('calcDescription');
-
         let currentExpression = '';
         let currentResult = '0';
         let lastWasEqual = false;
@@ -783,51 +2232,55 @@
         calcClear.addEventListener('click', () => handleCalcButton('C'));
         calcEquals.addEventListener('click', () => handleCalcButton('='));
 
-        function openCalc() {
-            currentExpression = '';
-            currentResult = '0';
-            lastWasEqual = false;
-            calcDescription.value = '';
-            updateCalcDisplay();
-            overlay.classList.add('active');
-            calcPopup.classList.add('active');
-        }
+function openCalc(tableId = null) {
+    currentTableId = tableId || getCurrentDateData().bangMaCan[0].id;
+    currentExpression = '';
+    currentResult = '0';
+    lastWasEqual = false;
+    calcDescription.value = '';
+    updateCalcDisplay();
+    overlay.classList.add('active');
+    calcPopup.classList.add('active');
+}
+
 
         function closeCalc() {
             overlay.classList.remove('active');
             calcPopup.classList.remove('active');
         }
 
-        calcSave.addEventListener('click', () => {
-            const weight = parseFloat(calcResult.innerText);
-            if (isNaN(weight) || calcResult.innerText === 'Lỗi') {
-                alert('Kết quả không hợp lệ. Vui lòng nhập phép tính hợp lệ.');
-                return;
-            }
-            const desc = calcDescription.value.trim();
-            const lastId = data.maCan.length > 0 ? Math.max(...data.maCan.map(i => i.id)) : 0;
-            const newId = lastId + 1;
-            const newCode = newId.toString();
-            data.maCan.push({
-                id: newId,
-                code: newCode,
-                weight: weight,
-                description: desc
-            });
-            renderList('maCan');
-            closeCalc();
-        });
+ calcSave.addEventListener('click', () => {
+    const weight = parseFloat(calcResult.innerText);
+    if (isNaN(weight) || calcResult.innerText === 'Lỗi') {
+        alert('Kết quả không hợp lệ. Vui lòng nhập phép tính hợp lệ.');
+        return;
+    }
+    
+    const desc = calcDescription.value.trim();
+    const currentData = getCurrentDateData();
+    const currentTable = currentData.bangMaCan.find(bang => bang.id === currentTableId);
+    
+    if (!currentTable) return;
+    
+    const lastId = currentTable.maCan.length > 0 ? Math.max(...currentTable.maCan.map(i => i.id)) : 0;
+    const newId = lastId + 1;
+    const newCode = newId.toString();
+    
+    currentTable.maCan.push({
+        id: newId,
+        code: newCode,
+        weight: weight,
+        description: desc
+    });
+    
+    renderList('maCan');
+    updateItemsCountDisplay();
+    closeCalc();
+});
 
         calcCancel.addEventListener('click', closeCalc);
 
-        // Nút thêm nổi
-        document.getElementById('fabBtn').addEventListener('click', () => {
-            if (currentTab === 'maCan') {
-                openCalc();
-            } else {
-                openFormNguoiMua();
-            }
-        });
+
 
         overlay.addEventListener('click', () => {
             closeFormNguoiMua();
@@ -835,7 +2288,19 @@
         });
 
         // Khởi tạo
-        renderList('maCan');
+        document.addEventListener('DOMContentLoaded', function() {
+            
+           
+            updateCurrentDateDisplay();
+            updateItemsCountDisplay(); 
+            updateDateCards();
+            setupDateCards();
+            showMainScreen();
+            autoMarkTodayAndActive();
+        });
     </script>
-</body>
-</html>
+
+    </script>
+
+
+</body></html>
