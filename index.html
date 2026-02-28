@@ -1,6 +1,8 @@
 <html lang="vi" style="-webkit-user-select: none; -webkit-touch-callout: none;"><head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Ứng dụng Bảng Cân - Quản lý mã cân</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -12,12 +14,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 0px;
-            color: #333;
-        }
+ body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 0px;
+    color: #333;
+    touch-action: manipulation; /* Thêm dòng này */
+}
         
         .container {
             margin: 0 auto;
@@ -42,7 +45,7 @@
     gap: 8px;
     -webkit-tap-highlight-color: transparent;
 }
-
+    
         
         .date-container {
             width: 100%;
@@ -2246,6 +2249,22 @@ function openCalc(tableId = null) {
             overlay.classList.remove('active');
             calcPopup.classList.remove('active');
         }
+
+    document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) {
+            e.preventDefault(); // Ngăn pinch‑to‑zoom nếu muốn
+        }
+    }, { passive: false });
+    
+    let lastTap = 0;
+    document.addEventListener('touchend', (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+            e.preventDefault(); // Ngăn double‑tap
+        }
+        lastTap = currentTime;
+    }, { passive: false });
 
  calcSave.addEventListener('click', () => {
     const weight = parseFloat(calcResult.innerText);
