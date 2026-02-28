@@ -342,7 +342,7 @@
         .weight-card {
             background: #ffffff;
             border-radius: 20px;
-            padding: 12px 20px;
+            padding: 20px 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
             display: flex;
@@ -350,25 +350,41 @@
             justify-content: flex-start;
             gap: 8px;
             transition: 0.2s;
+            flex-wrap: nowrap; 
         }
-        
+
+.weight-code, .weight-value {
+    flex-shrink: 1;    /* cho phép co lại nếu thiếu chỗ */
+    min-width: fit-content;
+}
         .weight-card:active {
             transform: scale(0.98);
             background: #f8fafc;
         }
         
         .weight-code {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #2d6a4f;
             min-width: 24px;
             text-align: left;
         }
         
         .weight-sep {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #2d6a4f;
         }
-        
+        .weight-value {
+    display: inline-flex;       /* Giữ số và đơn vị trên cùng một dòng */
+    align-items: baseline;      /* Căn chỉnh theo đường cơ sở của chữ */
+    gap: 2px;                   /* Khoảng cách nhỏ giữa số và đơn vị */
+    white-space: nowrap;        /* Ngăn xuống dòng */
+}
+
+.weight-unit {
+    font-size: 0.6rem;
+    margin-left: 1px;
+    color: #64748b;             /* Giữ màu xám như hiện tại */
+}
         .grid-container.hide-code .weight-code,
         .grid-container.hide-code .weight-sep {
             display: none;
@@ -379,7 +395,7 @@
         }
         
         .weight-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #0f172a;
             line-height: 1.2;
@@ -933,7 +949,7 @@
 
 .weighing-codes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 16px;
 }
 
