@@ -1,6 +1,6 @@
 <html lang="vi" style="-webkit-user-select: none; -webkit-touch-callout: none;"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hán Ngữ</title>
 <style>
 
@@ -12,51 +12,6 @@ box-sizing: border-box;
 /* Hiệu ứng bùng nổ cho ô pinyin - giữ nguyên vàng cam */
 .pinyin-box.reveal {
   animation: pinyinReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-input, textarea, select {
-    font-size: 16px; /* Ngăn chặn zoom tự động trên iOS */
-    transform: translateZ(0); /* Tối ưu hiệu năng */
-    -webkit-transform: translateZ(0);
-}
-
-/* Tối ưu cho input chính */
-#chineseInput {
-    -webkit-user-select: text; /* Cho phép chọn văn bản */
-    user-select: text;
-    -webkit-tap-highlight-color: transparent; /* Loại bỏ highlight khi tap */
-}
-
-/* Ngăn chặn hành vi mặc định khi touch */
-body {
-    -webkit-touch-callout: none;
-    -webkit-text-size-adjust: 100%;
-    -webkit-user-select: none;
-    touch-action: manipulation; /* Tối ưu touch events */
-}
-
-/* Cho phép select trong input */
-input, textarea {
-    -webkit-user-select: text;
-    user-select: text;
-}
-
-/* Tối ưu container khi bàn phím mở */
-@media screen and (max-width: 600px) {
-    body.keyboard-open {
-        width: 100%;
-        height: 100%;
-    }
-    
-    .container {
-        -webkit-overflow-scrolling: touch; /* Cuộn mượt trên iOS */
-    }
-    }
-
-/* Tối ưu safe area cho iPhone X trở lên */
-@supports(padding: max(0px)) {
-    .input-area {
-        padding-bottom: max(15px, env(safe-area-inset-bottom));
-    }
 }
 
 @keyframes pinyinReveal {
@@ -824,27 +779,83 @@ input, textarea {
     50% { opacity: 0.25; }
     100% { opacity: 1; }
 }
-.word-counter {
-  display:none;
-  position: fixed;
-  top: 80px;
-  left: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
-  padding: 2px 15px;
-  font-size: 40px;
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.1);
-  z-index: 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  margin-top: 10px; 
- animation: wordCounterAppear 0.5s ease-out forwards;
-opacity: 0; 
+.counters-container {
+    position: fixed;
+    left: 20px;
+    z-index: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+     display: none; 
+}
+#gameScreen .counters-container {
+    display: flex; 
+}
+.counters-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
+.top-row {
+    /* Hàng trên - writeCount và streakCount */
+}
+
+.bottom-row {
+    /* Hàng dưới - currentWordIndex */
+}
+
+/* Giữ nguyên các style hiện có cho word-counter */
+.word-counter {
+    display: none;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 2px 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    animation: wordCounterAppear 0.5s ease-out forwards;
+    opacity: 0;
+    white-space: nowrap;
+}
+
+/* Dark mode support */
 .dark-mode .word-counter {
-  background-color: rgba(40, 40, 40, 0.9);
-  color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(40, 40, 40, 0.9);
+    color: rgba(255, 255, 255, 0.1);
+}
+#wordWriteCount {
+    min-width: 130px;
+    display: inline-flex;
+    justify-content: center;
+}
+#streakCount {
+    --streak-color: 0, 255, 0;
+    --streak-opacity: 0.3;
+    color: rgba(var(--streak-color), var(--streak-opacity));
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: color, opacity;
+}
+
+#streakCount.normal {
+    /* Màu xanh mặc định - sẽ được điều chỉnh động */
+}
+
+#streakCount.warning {
+    animation: gentlePulse 2s infinite alternate;
+}
+
+
+@keyframes gentlePulse {
+    0% { 
+        opacity: 0.7;
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+    100% { 
+        opacity: 1;
+        text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    }
 }
 
 .special-lessons {
@@ -939,6 +950,9 @@ opacity: 0;
   overflow-y: auto;
     scrollbar-width: thin;
   scrollbar-color: #3498db #f1f1f1;
+
+
+
 }
 .catalog-content::-webkit-scrollbar {
   width: 8px;
@@ -1021,6 +1035,10 @@ transition: background-color 0.3s, color 0.3s;
 body, .container, #chineseInput {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+#gameScreen #darkModeToggle {
+  display: none;
+}
 #darkModeToggle {
     position: fixed;
     bottom: 225px;
@@ -1040,16 +1058,10 @@ body, .container, #chineseInput {
     justify-content: center;
     align-items: center;
 }
-
 #darkModeToggle:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
-
-#gameScreen #darkModeToggle {
-  display: none;
-}
-
 .add-word-modal #darkModeToggle,
 .lesson-catalog #darkModeToggle {
   display: none;
@@ -1061,6 +1073,7 @@ body, .container, #chineseInput {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   margin-top: 5px;
+
 }
 .time-control {
   display: flex;
@@ -1367,7 +1380,6 @@ body, .container, #chineseInput {
 
 
 #bulkAddWords {
-  margin-top: 5px;
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -1526,6 +1538,36 @@ opacity: 1;
 animation-fill-mode: forwards;
 position: relative;
 }
+/* HIỆU ỨNG ĐƯỜNG VÀNG CHÉO CHO MÀN HÌNH CHÍNH */
+#lessonSelection::after {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-image:
+radial-gradient(2px 2px at 20px 30px, rgba(255,215,0,0.8), transparent),
+radial-gradient(2px 2px at 40px 70px, rgba(255,215,0,0.6), transparent),
+radial-gradient(2px 2px at 60px 10px, rgba(255,215,0,0.7), transparent);
+background-repeat: repeat;
+animation: sparkle 3s linear infinite;
+z-index: 1;
+pointer-events: none; 
+}
+
+@keyframes sparkle {
+0% {
+background-position: 0 0, 0 0, 0 0;
+}
+100% {
+background-position: 100px 100px, 200px 200px, 300px 300px;
+}
+}
+
+
+
+
 .normal-lesson .container {
   animation: containerAppear 0.6s ease-out forwards;
   opacity: 0;
@@ -1589,9 +1631,6 @@ display: block;
 position: fixed;
 bottom: 95px;
 Right: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 z-index: 1000;
 }
 
@@ -1606,7 +1645,6 @@ font-size: 40px;
 cursor: pointer;
 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 transition: all 0.3s;
-
 }
 
 .dictionary-btn:hover {
@@ -1844,6 +1882,8 @@ display: none;
 align-items: center;
 }
 
+
+
 .pinyin-box {
 width: 30px;
 height: 30px;
@@ -1879,7 +1919,7 @@ min-width: 250px;
 }
 .chinese-intro {
 
-  animation: slideInFromRight 0.45s forwards;
+  animation: slideInFromRight 0.4s forwards;
 }
 
 .vietnamese {
@@ -1912,7 +1952,12 @@ min-width: 250px;
     color: #e84118 !important;
     font-style: normal
 }
-
+.correct-pinyin2 {
+    color: rgba(0, 255, 0, 0.2) !important;
+}
+.incorrect-pinyin2 {
+    color: rgba(255,0,0,0.2 ) !important; 
+}
 
 
 .next-word-preview {
@@ -2130,8 +2175,6 @@ align-items: center;
   font-size: 14px;
   background-color: #95a5a6;
   color: white;
-  min-width: 40px;
-  min-height: 30px;
 }
 
 .mastered-btn.mastered {
@@ -2197,7 +2240,6 @@ user-select: none;
 /* Phần chọn bài học */
 .lesson-selection {
 text-align: center;
-margin-bottom: 30px;
 }
 
 
@@ -2209,7 +2251,7 @@ margin-bottom: 30px;
   text-align: center;  
 }
 .lesson-selection .lesson-title {
-  font-size: 32px ;
+  font-size: 32px !important;
   margin-bottom: 0px;
   color: #2c3e50;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -2222,8 +2264,9 @@ margin-bottom: 30px;
 display: grid;
 grid-template-columns: repeat(5, 1fr);
 gap: 7.5px;
-margin: 20px auto;
-max-width: 500px;
+max-width: 700px;
+max-height: auto;
+padding: 0px;
 }
 .current-lesson-title {
 position: fixed;
@@ -2252,10 +2295,12 @@ animation-fill-mode: forwards;
 position: fixed;
 top: -70px;
 left: 20px;
+gap: 10px;
 display: none;
 flex-wrap: wrap; 
 gap: 5px;
-width: 180px; 
+width: 240px; 
+
 animation-duration: 0.6s;
 animation-fill-mode: forwards;
 
@@ -2311,19 +2356,20 @@ animation-name: slideDown2;
   color: white;
   border: 2px solid var(--border-color);
   border-radius: 10px;
-  min-width: 80px;
-  min-height: 80px; 
+  min-width: 90px;
+  min-height: 90px; 
   aspect-ratio: 1/1; 
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px; 
+  font-size: 33px; 
   font-weight: bold;
-  cursor: pointer;
+   font-family: 'Montserrat', 'Segoe UI', sans-serif;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   padding: 0; 
   position: relative;
+
 }
 
 .lesson-btn:hover {
@@ -2430,15 +2476,11 @@ color: white;
 border: none;
 width: 60px;
 height: 60px;
-right: 20px;
 border-radius: 50%;
 font-size: 40px;
 cursor: pointer;
 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .add-word-btn:hover {
@@ -2468,12 +2510,22 @@ overflow-y: auto;
   min-height: 540px;
   background-color: white;
   border-radius: 10px;
-  padding: 0px;
+  padding: 30px;
   width: 90%;
   max-width: 500px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: fadeInScale 0.3s;
-  overflow: hidden;
+  
+  & h2.add-word-title {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad);
+    color: white;
+    padding: 15px 20px;
+    margin: -30px -30px 20px -30px;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+    font-size: 20px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+  }
 }
 
 
@@ -2492,28 +2544,17 @@ border-radius: 5px;
 margin: 0 30px;
 }
 
-.add-word-content {
-  max-height: 90vh; 
-  position: relative;
-  min-height: 540px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 30px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  animation: fadeInScale 0.3s;
-  
-  & h2.add-word-title {
-    background: linear-gradient(45deg, #9b59b6, #8e44ad);
-    color: white;
-    padding: 15px 20px;
-    margin: -30px -30px 20px -30px;
-    border-radius: 15px 15px 0 0;
-    text-align: center;
-    font-size: 20px;
-    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-  }
+.add-word-title {
+font-size: 24px;
+margin-bottom: 20px;
+color: #2c3e50;
+text-align: center;
+}
+
+.add-word-form {
+display: flex;
+flex-direction: column;
+gap: 10px;
 }
 
 .add-word-form label {
@@ -2659,6 +2700,8 @@ font-size: 16px;
   display: none;
   flex-direction: column;
   overflow: hidden;
+
+
     animation: fadeInScale2 0.3s;
   transform-origin: center; 
 
@@ -2716,10 +2759,11 @@ font-size: 16px;
 
 .catalog-list {
   padding: 20px;
+
   background: #f8f9fa; 
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-top: 5px;
+ margin-top: 5px;
 }
 
 
@@ -2759,7 +2803,6 @@ font-size: 16px;
   font-weight: bold;
   margin-right: 15px;
   flex-shrink: 0;
-  font-size: 30px;
 }
 
 .lesson-title {
@@ -2928,9 +2971,6 @@ font-size: 16px;
   border-radius: 50%;
   font-size: 40px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   transition: all 0.3s;
@@ -3080,8 +3120,6 @@ font-size: 16px;
     background-color: #2980b9;
 }
 
-
-
 #bulkToggleStatusBtn {
     background-color: #2ecc71;
     color: white;
@@ -3090,15 +3128,6 @@ font-size: 16px;
 #bulkToggleStatusBtn:hover {
     background-color: #27ae60;
 }
-#closeDictionaryFromBulk {
-    background-color: #e74c3c;
-    color: white;
-}
-
-#closeDictionaryFromBulk:hover {
-    background-color: #c0392b;
-}
-
 
 .word-card-header {
     display: flex;
@@ -3183,6 +3212,16 @@ font-size: 16px;
     opacity: 1;
     transform: translate(-50%, 0) scale(var(--final-scale, 1));
 }
+    .dictionary-words .tone1,
+    .dictionary-words .tone2,
+    .dictionary-words .tone3,
+    .dictionary-words .tone4,
+    .dictionary-words .tone5 {
+        font-size: 16px !important;
+    }
+   .tone1, .tone2, .tone3, .tone4, .tone5 {
+        font-size: 25px !important;
+    }
 .firework {
     position: fixed;
     pointer-events: none;
@@ -3421,6 +3460,8 @@ font-size: 16px;
     opacity: 0.5;
     pointer-events: none;
 }
+
+
 .tone1 { color: #007bff; } /* xanh dương */
 .tone2 { color: #28a745; } /* xanh lá */
 .tone3 { color: #ffc107; } /* vàng */
@@ -3434,6 +3475,7 @@ body.listen-mode #audio-visualizer {
     transform: translate(-50%, -50%) scale(3);
     top: -25vh;  /* điều chỉnh để visualizer nằm giữa vùng chữ Hán */
 }
+
 
 .hide-nextword {
     display: none !important;
@@ -3531,14 +3573,6 @@ body.listen-mode .word-display .chinese {
 .select-all-btn.selected:hover {
     background: #c0392b; /* Màu đỏ đậm khi hover */
 }
-.correct-pinyin2 {
-    color: rgba(0, 255, 0, 0.3) !important;
-}
-.incorrect-pinyin2 {
-    color: rgba(255,0,0,0.3 ) !important; 
-}
-
-/* Responsive for mobile */
 @media screen and (max-width: 600px) {
     body {
         padding: 5px !important;
@@ -3623,6 +3657,7 @@ body.listen-mode .word-display .chinese {
 .input-area {
     padding: 0 0 1px;
     max-width: 250px;
+    bottom: 60px
     width: 90% 
 }
  .chinese {
@@ -4059,7 +4094,7 @@ font-size: 12px;
 
     /* Pinyin coloring */
     .tone1, .tone2, .tone3, .tone4, .tone5 {
-        font-size: 20px !important;
+        font-size: 12px !important;
     }
 
     /* Ví dụ */
@@ -4090,21 +4125,196 @@ font-size: 12px;
         font-size: 15px !important;
         padding: 3px !important;
     }
-
-
-
-/*đến đây */
 }
-</style>
+/* Nút trợ giúp (dấu hỏi) */
+.help-btn {
+    position: fixed;
+    bottom: 290px;
+    right: 20px;
+    background: linear-gradient(45deg, #17a2b8, #138496);
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 40px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.help-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+/* Modal trợ giúp */
+.help-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 3000;
+    justify-content: center;
+    align-items: center;
+}
+.help-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeInScale 0.3s;
+    padding: 20px;
+    position: relative;
+}
+.help-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.help-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+.close-help {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+}
+.close-help:hover {
+    color: #333;
+}
+.help-section {
+    margin-bottom: 20px;
+}
+.help-section h3 {
+    margin: 0 0 10px 0;
+    color: #17a2b8;
+    font-size: 18px;
+}
+.help-section p, .help-section li {
+    color: #555;
+    line-height: 1.6;
+}
+.help-section ul {
+    padding-left: 20px;
+}
+.help-section li {
+    margin-bottom: 5px;
+}
+.dark-mode .help-content {
+    background: #2d2d2d;
+    color: #e0e0e0;
+}
+.dark-mode .help-header h2 {
+    color: #fff;
+}
+.dark-mode .close-help {
+    color: #aaa;
+}
+.dark-mode .close-help:hover {
+    color: #fff;
+}
+.dark-mode .help-section h3 {
+    color: #5bc0de;
+}
+.dark-mode .help-section p,
+.dark-mode .help-section li {
+    color: #ccc;
+}
+/* Responsive cho mobile */
+@media screen and (max-width: 600px) {
+    .help-btn {
+        bottom: 252px;
+        right: 5px;
+        width: 50px;
+        height: 50px;
+        font-size: 30px;
+    }
+}
+
+
+    </style>
 </head>
 <body>
+<script>
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode === 123) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.ctrlKey && event.shiftKey && event.keyCode === 73) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.ctrlKey && event.shiftKey && event.keyCode === 74) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.ctrlKey && event.keyCode === 85) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.ctrlKey && event.shiftKey && event.keyCode === 67) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.metaKey && event.altKey && event.keyCode === 73) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.metaKey && event.altKey && event.keyCode === 74) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.metaKey && event.altKey && event.keyCode === 67) {
+        event.preventDefault();
+        return false;
+    }
+    if (event.metaKey && event.keyCode === 85) {
+        event.preventDefault();
+        return false;
+    }
+});
 
-
+let devtoolsOpen = false;
+const checkDevTools = setInterval(function() {
+    const before = new Date().getTime();
+    debugger; 
+    const after = new Date().getTime();
+    if (after - before > 100) {
+        if (!devtoolsOpen) {
+            devtoolsOpen = true;
+            document.body.innerHTML = '<h1 style="color:red; text-align:center; margin-top:20%;">⚠️ Không được phép mở DevTools</h1>';
+        }
+    } else {
+        devtoolsOpen = false;
+    }
+}, 1000); 
+</script>
     <!-- Màn hình đăng nhập -->
   <div class="login-overlay" id="loginOverlay" style="display: none;">
     <div class="login-container">
         <div class="login-content">
             <div class="phone-display" id="phoneDisplay">0396628113</div>
+
             <h2 class="login-title">Nhập mật khẩu</h2>
             <input type="text" id="passwordInput" class="login-input" placeholder="Nhập mật khẩu">
             <div class="login-button-container">
@@ -4116,7 +4326,11 @@ font-size: 12px;
                 <strong>Mật khẩu sai!</strong><br>
                 Vui lòng thử lại.
             </div>
+        <div style="margin-top: 10px; margin-bottom: -10px;  color: #aaa; font-size: 30px;">
+    ID: <span id="deviceCodeDisplay"></span>
+</div>
         </div>
+
     </div>
   </div>
 
@@ -4132,8 +4346,6 @@ font-size: 12px;
         <button id="bulkDeleteBtn">Xóa</button>
         <button id="bulkMoveBtn">Chuyển từ</button>
         <button id="bulkToggleStatusBtn">Đổi trạng thái</button>
- <button id="closeDictionaryFromBulk" class="bulk-actions-buttons">Đóng từ điển</button>
-
     </div>
 </div>
 
@@ -4142,6 +4354,65 @@ font-size: 12px;
   <h3>📚 Bài học</h3>
   <div id="lessonSidebarItems"><div class="lesson-sidebar-item" data-lesson-id="1">Bài 1: Bài tập hàng ngày</div><div class="lesson-sidebar-item" data-lesson-id="2">Bài 2: Đã học</div><div class="lesson-sidebar-item" data-lesson-id="3">Bài 3: Lưu trữ</div><div class="lesson-sidebar-item" data-lesson-id="4">Bài 4: </div><div class="lesson-sidebar-item" data-lesson-id="5">Bài 5: </div><div class="lesson-sidebar-item" data-lesson-id="6">Bài 6: </div><div class="lesson-sidebar-item" data-lesson-id="7">Bài 7: </div><div class="lesson-sidebar-item" data-lesson-id="8">Bài 8: </div><div class="lesson-sidebar-item" data-lesson-id="9">Bài 9: </div><div class="lesson-sidebar-item" data-lesson-id="10">Bài 10: Từ Điển</div></div>
 </div>
+<button id="darkModeToggle">☀️</button>
+<button class="help-btn" id="helpBtn">?</button>
+
+<div class="help-modal" id="helpModal">
+    <div class="help-content">
+        <div class="help-header">
+            <h2>📘 Hướng dẫn sử dụng Hán Ngữ</h2>
+            <button class="close-help" id="closeHelp">×</button>
+        </div>
+        <div class="help-section">
+            <h3>🎮 Cách chơi</h3>
+            <p></p>
+            <ul>
+                <li><strong>Phím cách</strong> - Kiểm tra đáp án (nhanh hơn nhấn nút)</li>
+                <li><strong>Enter</strong> - Phát âm lại từ hiện tại</li>
+                <li><strong>Esc</strong> - Quay lại màn hình chọn bài</li>
+            </ul>
+        </div>
+        <div class="help-section">
+            <h3>📚 Quản lý từ vựng</h3>
+            <p>Sử dụng từ điển (📖) để xem, sửa, xóa, chuyển bài, đánh dấu đã thuộc. Bạn có thể chọn nhiều từ để thao tác hàng loạt.</p>
+            <p>Thêm từ mới (➕) hoặc thêm hàng loạt bằng textarea.</p>
+        </div>
+        <div class="help-section">
+            <h3>⚙️ Cài đặt</h3>
+            <p>Vào danh mục bài học (⚙️) để điều chỉnh:</p>
+            <ul>
+                <li>Số từ hiển thị, thời gian mỗi từ, thưởng/phạt thời gian</li>
+                <li>Bật/tắt âm thanh, chọn giọng đọc, tốc độ, cao độ</li>
+                <li>Chế độ nghe và viết (ẩn chữ Hán, hiển thị pinyin khi sai)</li>
+                <li>Hoán đổi vị trí Hán-Việt, hiển thị nghĩa, phân tích bộ thủ, example</li>
+                <li>Hiệu ứng pháo hoa, thông báo khen thưởng</li>
+            </ul>
+        </div>
+        <div class="help-section">
+            <h3>🔤 Nhập pinyin có dấu</h3>
+            <p>Khi con trỏ ở ô nhập, gõ nguyên âm (a, e, i, o, u) rồi nhấn số 1-4 để thêm dấu thanh tương ứng.</p>
+            <p>Ví dụ: gõ "a" + "1" → "ā", "a" + "3" → "ǎ".</p>
+        </div>
+        <div class="help-section">
+            <h3>📱 Các nút chức năng</h3>
+            <ul>
+                <li><strong>?</strong> - Hướng dẫn này</li>
+                <li><strong>☀️/🌙</strong> - Chuyển đổi sáng/tối</li>
+                <li><strong>⚙️</strong> - Mở danh mục bài học và cài đặt</li>
+                <li><strong>📖</strong> - Từ điển</li>
+                <li><strong>➕</strong> - Thêm từ mới</li>
+            </ul>
+        </div>
+        <div class="help-section">
+            <h3>❓ Khác</h3>
+            <p>Đánh dấu đã thuộc sau 30 lần viết đúng liên tiếp (có thể điều chỉnh trong cài đặt).</p>
+            <p>Bạn có thể góp ý qua facebook/sondad246</p>
+            <p>Xin cảm ơn!</p>
+            <p></p>
+        </div>
+    </div>
+</div>
+
 
 
 <!-- Bảng danh mục bài học -->
@@ -4233,7 +4504,7 @@ font-size: 12px;
 </div>
 <div class="time-control">
   <label>Số từ hiển thị:</label>
-  <input type="number" id="wordCount" min="1" max="1000" value="20">
+  <input type="number" id="wordCount" min="5" max="1000" value="20">
    <span>( Từ )</span>
       </div>
   <div class="time-control">
@@ -4257,7 +4528,11 @@ font-size: 12px;
         <input type="number" id="wrongBonusTime" min="1" max="50" value="10">
    <span>( Giây )</span>
       </div>
-
+<div class="time-control">
+    <label>Số từ đúng liên tục thì đánh dấu học thuộc:</label>
+    <input type="number" id="masteryThreshold" min="5" max="100" value="30">
+    <span>( Từ )</span>
+</div>
 
       <div class="time-control">
   <label>Reset tất cả bài học:</label>
@@ -4265,98 +4540,236 @@ font-size: 12px;
 </div>
 
 
+
 <script>
-  function generatePassword() {
-    const now = new Date();
-    
-    let year = now.getFullYear();
-    let month = now.getMonth() + 1;
-    let day = now.getDate();
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    
-    let roundedMinutes = Math.floor(minutes / 10) * 10 + 10;
-    
-    if (roundedMinutes === 60) {
-        roundedMinutes = 0;
-        hours += 1;
+    // Nút trợ giúp
+document.getElementById('helpBtn').addEventListener('click', function() {
+    document.getElementById('helpModal').style.display = 'flex';
+});
+
+document.getElementById('closeHelp').addEventListener('click', function() {
+    document.getElementById('helpModal').style.display = 'none';
+});
+
+// Đóng modal khi click ra ngoài nội dung
+document.getElementById('helpModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
     }
-    
-    const formattedMinutes = String(roundedMinutes).padStart(2, '0');
-    
-    const password = "24" + formattedMinutes + "06" + (year * hours) + (hours * day) + "1997" + (month * roundedMinutes) + String(day).padStart(2, '0');
-    
-    return password;
+});
+function getOrCreateDeviceCode() {
+    let code = localStorage.getItem('deviceCode');
+    if (!code) {
+        code = Math.floor(1000 + Math.random() * 9000).toString();
+        localStorage.setItem('deviceCode', code);
+    }
+    return code;
 }
 
-async function doubleEncodePassword(password) {
+// Hiển thị mã thiết bị lên màn hình
+function displayDeviceCode() {
+    const deviceCode = getOrCreateDeviceCode();
+    const deviceSpan = document.getElementById('deviceCodeDisplay');
+    if (deviceSpan) {
+        deviceSpan.textContent = deviceCode;
+    }
+}
+
+// ========== MẬT KHẨU MỚI ==========
+const PERMANENT_SECRET = 1208;
+const THREE_MONTH_SECRET = 2406;
+const THREE_MONTH_MS = 90 * 24 * 60 * 60 * 1000; // 90 ngày
+
+// Hàm băm chung
+async function hashPassword(rawStr) {
     const encoder = new TextEncoder();
-    const data = encoder.encode(password);
+    const data = encoder.encode(rawStr);
     const hash = await crypto.subtle.digest('SHA-256', data);
-    const sha256Hash = Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-    
-    const base64Encoded = btoa(sha256Hash);
-    return base64Encoded;
+    const hashArray = Array.from(new Uint8Array(hash));
+    const sha256Hex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const base64Encoded = btoa(sha256Hex);
+    const first10 = base64Encoded.substring(0, 10);
+    const last10 = base64Encoded.substring(base64Encoded.length - 12, base64Encoded.length - 2);
+    return first10 + last10; // 20 ký tự
 }
 
-function togglePhoneNumber() {
-    const phoneDisplay = document.getElementById('phoneDisplay');
-    const isVisible = phoneDisplay.style.display === 'block';
-    
-    if (isVisible) {
-        phoneDisplay.style.display = 'none';
-    } else {
-        phoneDisplay.style.display = 'block';
-        setTimeout(() => {
-            phoneDisplay.style.display = 'none';
-        }, 10000);
-    }
+async function computePermanentPassword(deviceCode) {
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const code = BigInt(parseInt(deviceCode));
+    const rawPassword = code * BigInt(day) * BigInt(month) * BigInt(year) * BigInt(PERMANENT_SECRET);
+    return hashPassword(rawPassword.toString());
 }
+
+async function compute3MonthPassword(deviceCode) {
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const code = BigInt(parseInt(deviceCode));
+    const rawPassword = code * BigInt(day) * BigInt(month) * BigInt(year) * BigInt(THREE_MONTH_SECRET);
+    return hashPassword(rawPassword.toString());
+}
+let loginMessageTimeout;
 
 async function checkPassword() {
-    const passwordInput = document.getElementById('passwordInput').value;
+    const passwordInput = document.getElementById('passwordInput').value.trim();
     const messageDiv = document.getElementById('loginMessage');
     const attemptsDiv = document.getElementById('passwordAttempts');
-    const correctPassword = generatePassword();
-    const doubleEncodedCorrectPassword = await doubleEncodePassword(correctPassword);
-    
-    messageDiv.className = 'login-message hidden';
-    
-    if (passwordInput === doubleEncodedCorrectPassword) {
-        messageDiv.textContent = "Mật khẩu đúng! Đang mở ứng dụng...";
+
+    if (loginMessageTimeout) clearTimeout(loginMessageTimeout);
+
+    messageDiv.style.display = 'none';
+    attemptsDiv.style.display = 'none';
+
+    if (!passwordInput) {
+        messageDiv.textContent = 'Vui lòng nhập mật khẩu!';
+        messageDiv.className = 'login-message error';
+        messageDiv.style.display = 'block';
+        loginMessageTimeout = setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 1000);
+        return;
+    }
+
+    const deviceCode = getOrCreateDeviceCode();
+
+    // Kiểm tra mật khẩu vĩnh viễn
+    const permanentPassword = await computePermanentPassword(deviceCode);
+    // Kiểm tra mật khẩu 3 tháng
+    const threeMonthPassword = await compute3MonthPassword(deviceCode);
+
+    if (passwordInput === permanentPassword) {
+        // Đăng nhập vĩnh viễn
+        messageDiv.textContent = "✅ Mật khẩu vĩnh viễn đúng! Đang mở ứng dụng...";
         messageDiv.className = 'login-message success';
-        attemptsDiv.style.display = 'none';
-        
-        // Lưu trạng thái đã đăng nhập
+        messageDiv.style.display = 'block';
+
         localStorage.setItem('hanNguAuthenticated', 'true');
-        
-        setTimeout(() => {
+        localStorage.setItem('hanNguAuthType', 'permanent');
+        localStorage.removeItem('hanNguAuthTime');
+        localStorage.setItem('hanNguAuthCheck', generateAuthCheck());
+
+        stopTrialTimer();
+        document.getElementById('trialTimer').style.display = 'none';
+
+        loginMessageTimeout = setTimeout(() => {
+            messageDiv.style.display = 'none';
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
         }, 1000);
-    } else {
+    }
+    else if (passwordInput === threeMonthPassword) {
+        // Đăng nhập 3 tháng
+        messageDiv.textContent = "✅ Mật khẩu 3 tháng đúng! Đang mở ứng dụng...";
+        messageDiv.className = 'login-message success';
+        messageDiv.style.display = 'block';
+
+        localStorage.setItem('hanNguAuthenticated', 'true');
+        localStorage.setItem('hanNguAuthType', 'temporary');
+        localStorage.setItem('hanNguAuthTime', Date.now().toString());
+        localStorage.setItem('hanNguAuthCheck', generateAuthCheck());
+
+        stopTrialTimer();
+        document.getElementById('trialTimer').style.display = 'none';
+
+        loginMessageTimeout = setTimeout(() => {
+            messageDiv.style.display = 'none';
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+        }, 1000);
+    }
+    else {
+        // Sai mật khẩu
         attemptsDiv.style.display = 'block';
-        setTimeout(() => {
+        loginMessageTimeout = setTimeout(() => {
             attemptsDiv.style.display = 'none';
-        }, 5000);
-        
+        }, 2000);
+
         document.getElementById('passwordInput').value = '';
         document.getElementById('passwordInput').focus();
     }
 }
+// Hiển thị lại mã thiết bị khi nhấn nút 📱
+function togglePhoneNumber() {
+    const phoneDisplay = document.getElementById('phoneDisplay');
+    const deviceCode = getOrCreateDeviceCode();
+    phoneDisplay.textContent = `Facebook/sondad246`;
+    phoneDisplay.style.display = 'block';
+    setTimeout(() => {
+        phoneDisplay.style.display = 'none';
+    }, 10000);
+}
 
-// Kiểm tra khi trang load
+// Lưu thống kê từ (giữ nguyên)
+function saveWordStatsToStorage() {
+    try {
+        localStorage.setItem('hanNguWordStats', JSON.stringify(wordStats));
+        console.log('Đã lưu thống kê từ:', wordStats);
+    } catch (e) {
+        console.error('Lỗi khi lưu thống kê từ:', e);
+    }
+}
+
+// Tải thống kê từ (giữ nguyên)
+function loadWordStatsFromStorage() {
+    try {
+        const saved = localStorage.getItem('hanNguWordStats');
+        if (saved) {
+            wordStats = JSON.parse(saved);
+            console.log('Đã tải thống kê từ:', wordStats);
+        } else {
+            wordStats = {};
+            console.log('Không có thống kê từ được lưu, khởi tạo mới');
+        }
+    } catch (e) {
+        console.error('Lỗi khi tải thống kê từ:', e);
+        wordStats = {};
+    }
+}
+
+// Khởi tạo khi trang load
 document.addEventListener('DOMContentLoaded', function() {
+    if (!validateAuth()) return;
     const isAuthenticated = localStorage.getItem('hanNguAuthenticated') === 'true';
+    const timerDiv = document.getElementById('trialTimer');
     
     if (isAuthenticated) {
+        // Đã đăng nhập (đã mua) - ẩn đồng hồ và vào app
         document.getElementById('loginOverlay').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
+        if (timerDiv) timerDiv.style.display = 'none';
     } else {
-        document.getElementById('loginOverlay').style.display = 'flex';
-        document.getElementById('mainApp').style.display = 'none';
+        // Chưa đăng nhập - kiểm tra thời gian dùng thử
+        if (trialUsed >= TRIAL_MAX_SECONDS) {
+            // Hết thời gian dùng thử, hiện màn hình đăng nhập
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            if (timerDiv) timerDiv.style.display = 'none';
+            
+            // Hiển thị mã thiết bị
+            const deviceSpan = document.getElementById('deviceCodeDisplay');
+            if (deviceSpan) {
+                deviceSpan.textContent = getOrCreateDeviceCode();
+            } else {
+                const phoneDisplay = document.getElementById('phoneDisplay');
+                if (phoneDisplay) {
+                    phoneDisplay.textContent = 'Mã thiết bị: ' + getOrCreateDeviceCode();
+                    phoneDisplay.style.display = 'block';
+                }
+            }
+        } else {
+            // Còn thời gian dùng thử, vào app và bắt đầu đếm
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            if (timerDiv) {
+                timerDiv.style.display = 'block';
+                updateTrialDisplay();
+            }
+            startTrialTimer();
+        }
     }
 });
 
@@ -4367,22 +4780,6 @@ document.getElementById('passwordInput').addEventListener('keypress', function(e
     }
 });
 
-// Phần JavaScript hiện tại của bạn giữ nguyên
-function saveDataToStorage() {
-  try {
-    localStorage.setItem('hanNguLessons', JSON.stringify(lessons.map(lesson => ({
-      id: lesson.id,
-      title: lesson.title,
-      color: lesson.color || generateColorForLesson(lesson.id),
-      vocabulary: lesson.vocabulary
-    }))));
-    console.log('Dữ liệu đã lưu :', lessons);
-    return true;
-  } catch (e) {
-    console.error('Lỗi khi lưu vào localStorage:', e);
-    return false;
-  }
-}
 document.getElementById('resetLessonsBtn').addEventListener('click', function() {
   const password = prompt("Nhập mật khẩu để reset tất cả bài học:");
 
@@ -4393,6 +4790,11 @@ document.getElementById('resetLessonsBtn').addEventListener('click', function() 
 
       // THÊM: Xuất từ điển trước khi reset
       exportAllLessonsDictionary();
+                  localStorage.removeItem('hanNguLessons');
+            localStorage.removeItem('hanNguWordStats');
+            
+            // Reset biến trong memory
+            wordStats = {};
       localStorage.removeItem('hanNguLessons');
       alert("✅ Đã reset thành công tất cả bài học!");
       location.reload();
@@ -4402,6 +4804,134 @@ alert("❌Có biết mật khẩu không mà nhập :)))\n\nLiên hệ iGoer/Che
 
   }
 });
+// ========== QUẢN LÝ THỜI GIAN DÙNG THỬ ==========
+const TRIAL_MAX_SECONDS = 300; // 10 phút = 600 giây
+let trialUsed = parseInt(localStorage.getItem('trialTimeUsed')) || 0;
+let trialInterval = null;
+let isTrialActive = false;
+
+// Định dạng thời gian HH:MM:SS
+function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+// Cập nhật hiển thị đồng hồ
+function updateTrialDisplay() {
+    const timerSpan = document.getElementById('trialTimeRemaining');
+    if (!timerSpan) return;
+    const remaining = TRIAL_MAX_SECONDS - trialUsed;
+    if (remaining <= 0) {
+        timerSpan.textContent = '00:00';
+        lockApp();
+    } else {
+        timerSpan.textContent = formatTime(remaining);
+        // Đổi màu khi sắp hết giờ
+        if (remaining <= 60) {
+            timerSpan.style.color = '#ff4444';
+            timerSpan.style.textShadow = '0 0 8px #ff0000';
+        } else if (remaining <= 300) {
+            timerSpan.style.color = '#ffaa00';
+        } else {
+            timerSpan.style.color = '#fff';
+        }
+    }
+}
+
+// Khóa ứng dụng, hiện màn hình đăng nhập
+function lockApp() {
+    stopTrialTimer();
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('trialTimer').style.display = 'none';
+    
+    // Hiển thị mã thiết bị
+    const deviceSpan = document.getElementById('deviceCodeDisplay');
+    if (deviceSpan) {
+        deviceSpan.textContent = getOrCreateDeviceCode();
+    } else {
+        const phoneDisplay = document.getElementById('phoneDisplay');
+        if (phoneDisplay) {
+            phoneDisplay.textContent = 'Mã thiết bị: ' + getOrCreateDeviceCode();
+            phoneDisplay.style.display = 'block';
+        }
+    }
+}
+// Bắt đầu đếm thời gian sử dụng
+function startTrialTimer() {
+    if (trialInterval) clearInterval(trialInterval);
+    isTrialActive = true;
+    trialInterval = setInterval(() => {
+        trialUsed++;
+        localStorage.setItem('trialTimeUsed', trialUsed);
+        updateTrialDisplay();
+        if (trialUsed >= TRIAL_MAX_SECONDS) {
+            lockApp();
+            return;
+        }
+    }, 1000);
+}
+
+// Dừng đếm thời gian
+function stopTrialTimer() {
+    if (trialInterval) {
+        clearInterval(trialInterval);
+        trialInterval = null;
+    }
+    isTrialActive = false;
+}
+
+// Xử lý khi tab bị ẩn – tạm dừng đếm
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        if (isTrialActive) stopTrialTimer();
+    } else {
+        const isAuth = localStorage.getItem('hanNguAuthenticated') === 'true';
+        if (!isAuth && trialUsed < TRIAL_MAX_SECONDS) {
+            startTrialTimer();
+        }
+    }
+});
+
+const AUTH_SECRET = 'HanNgu@2026!Secure'; // Bạn có thể đổi thành chuỗi bất kỳ
+
+function generateAuthCheck() {
+    const deviceCode = getOrCreateDeviceCode();
+    // Tạo chuỗi xác thực dựa trên deviceCode và secret, không dùng ngày
+    return btoa(deviceCode + AUTH_SECRET);
+}
+
+function validateAuth() {
+    const auth = localStorage.getItem('hanNguAuthenticated');
+    const storedCheck = localStorage.getItem('hanNguAuthCheck');
+    const expectedCheck = generateAuthCheck();
+    
+    // Nếu auth = true nhưng check không khớp => gian lận
+    if (auth === 'true' && storedCheck !== expectedCheck) {
+        localStorage.clear();
+        alert('Phát hiện hành vi gian lận! Dữ liệu đã được xóa. Ứng dụng sẽ khởi động lại.');
+        location.reload();
+        return false;
+    }
+
+    // Kiểm tra hạn 3 tháng
+    const authType = localStorage.getItem('hanNguAuthType');
+    if (authType === 'temporary') {
+        const authTime = parseInt(localStorage.getItem('hanNguAuthTime'));
+        if (isNaN(authTime) || Date.now() - authTime > THREE_MONTH_MS) {
+            // Hết hạn, xóa thông tin đăng nhập
+            localStorage.removeItem('hanNguAuthenticated');
+            localStorage.removeItem('hanNguAuthType');
+            localStorage.removeItem('hanNguAuthTime');
+            localStorage.removeItem('hanNguAuthCheck');
+            alert('Mật khẩu 3 tháng đã hết hạn. Vui lòng đăng nhập lại.');
+            return false;
+        }
+    }
+    return true;
+}
+
 </script>
 
 
@@ -4409,25 +4939,44 @@ alert("❌Có biết mật khẩu không mà nhập :)))\n\nLiên hệ iGoer/Che
     </div>
   </div>
 </div>
-<div class="word-counter" id="wordCounter">
-<span id="currentWordIndex">0</span>
+<div class="counters-container">
+    <!-- Hàng trên: writeCount và streakCount -->
+    <div class="counters-row top-row">
+        <div class="word-counter" id="wordWriteCount">
+            <span id="writeCount">0</span>
+        </div>
+        <div class="word-counter" id="correctStreakCounter">
+            <span id="streakCount">0</span>
+        </div>
+    </div>
+    
+    <!-- Hàng dưới: currentWordIndex -->
+    <div class="counters-row bottom-row">
+        <div class="word-counter" id="wordCounter">
+            <span id="currentWordIndex">0</span>
+        </div>
+    </div>
 </div>
+
+
+
+
 
 
 
 <div class="creator-signature" style="position: absolute; bottom: 10px; right: 10px; z-index: 1000;">
-  <span class="nickname">Cheo.ruan</span>
+  <span class="nickname">Sondad246</span>
 </div>
+<div id="trialTimer" style="position: fixed; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 10001; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); display: none;">
+    ⏳ Dùng thử: <span id="trialTimeRemaining">10:00</span>
 </div>
-<button id="darkModeToggle">☀️</button>
-</code></pre></div><code>
+
 
 <button class="open-catalog-btn" id="openCatalogBtn">⚙️</button>
 <div class="pinyin-indicator" id="pinyinIndicator"><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div><div class="pinyin-box"></div></div>
 
 <div class="container" id="lessonSelection">
 <div class="lesson-selection">
-<h1 class="lesson-title">Chọn Bài Học</h1>
 <p class="game-subtitle"></p>
 <div class="lessons-container" id="lessonsContainer"><button class="lesson-btn" title="Bài 1: Bài tập hàng ngày" data-lesson-id="1" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">1</button><button class="lesson-btn" title="Bài 2: Đã học" data-lesson-id="2" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">2</button><button class="lesson-btn" title="Bài 3: Lưu trữ" data-lesson-id="3" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">3</button><button class="lesson-btn" title="Bài 4: " data-lesson-id="4" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">4</button><button class="lesson-btn" title="Bài 5: " data-lesson-id="5" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">5</button><button class="lesson-btn" title="Bài 6: " data-lesson-id="6" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">6</button><button class="lesson-btn" title="Bài 7: " data-lesson-id="7" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">7</button><button class="lesson-btn" title="Bài 8: " data-lesson-id="8" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">8</button><button class="lesson-btn" title="Bài 9: " data-lesson-id="9" style="--base-color: #3498db; --gradient-color: #246a99; --border-color: #2979af;">9</button><button class="lesson-btn" title="Bài 10: Từ Điển" data-lesson-id="10" style="--base-color: #34db6d; --gradient-color: #24994c; --border-color: #29af57;">10</button></div>
   <div class="special-lessons" id="specialLessons"><button class="special-lesson-btn">11<br><span>Thanh mẫu</span></button><button class="special-lesson-btn">12<br><span>Phụ mẫu</span></button><button class="special-lesson-btn">13<br><span>Bộ Thủ</span></button></div>
@@ -4490,7 +5039,7 @@ alert("❌Có biết mật khẩu không mà nhập :)))\n\nLiên hệ iGoer/Che
 </div>
 
 </div>
-
+</div>
 <div class="dictionary-section" id="dictionarySection">
 <button class="dictionary-btn" id="dictionaryBtn">📖</button>
 </div>
@@ -4503,7 +5052,7 @@ alert("❌Có biết mật khẩu không mà nhập :)))\n\nLiên hệ iGoer/Che
 
 </div>
 </div>
-</code><code>
+</code></pre></div><code>
 <div class="add-word-section" id="addWordSection" style="display: block;">
 <button class="add-word-btn" id="addWordBtn">+</button>
 </div>
@@ -4514,8 +5063,7 @@ alert("❌Có biết mật khẩu không mà nhập :)))\n\nLiên hệ iGoer/Che
     <button id="closeAddWordModal" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer;">×</button>
     
     <div class="lesson-selector">
-<select id="lessonSelect"><option value="1">Bài 1: Bài tập hàng ngày</option><option value="2">Bài 2: Đã học</option><option value="3">Bài 3: Lưu trữ</option><option value="4">Bài 4: </option><option value="5">Bài 5: </option><option value="6">Bài 6: </option><option value="7">Bài 7: </option><option value="8">Bài 8: </option><option value="9">Bài 9: </option><option value="10">Bài 10: Từ Điển</option><option value="11">Thanh mẫu</option><option value="12">Phụ mẫu</option><option value="13">Bộ Thủ</option><option value="14">Phân tích Bộ thủ</option></select>
-
+      <select id="lessonSelect"><option value="1">Bài 1: Bài tập hàng ngày</option><option value="2">Bài 2: Đã học</option><option value="3">Bài 3: Lưu trữ</option><option value="4">Bài 4: </option><option value="5">Bài 5: </option><option value="6">Bài 6: </option><option value="7">Bài 7: </option><option value="8">Bài 8: </option><option value="9">Bài 9: </option><option value="10">Bài 10: Từ Điển</option><option value="11">Thanh mẫu</option><option value="12">Phụ mẫu</option><option value="13">Bộ Thủ</option><option value="14">Phân tích Bộ thủ</option><option value="1">Bài 1: Bài tập hàng ngày</option><option value="2">Bài 2: Đã học</option><option value="3">Bài 3: Lưu trữ</option><option value="4">Bài 4: </option><option value="5">Bài 5: </option><option value="6">Bài 6: </option><option value="7">Bài 7: </option><option value="8">Bài 8: </option><option value="9">Bài 9: </option><option value="10">Bài 10: Từ Điển</option><option value="11">Thanh mẫu</option><option value="12">Phụ mẫu</option><option value="13">Bộ Thủ</option><option value="14">Phân tích Bộ thủ</option></select>
     </div>
     
 <form id="addWordForm" class="add-word-form">
@@ -4800,7 +5348,8 @@ color: "#3498db",
 vocabulary: [  
 { chinese: "希望", pinyin: "xī wàng", meaning: "Hy vọng", mastered: false },
 { chinese: "护士", pinyin: "hùshi", meaning: "y tá", mastered: false },
-{ chinese: "我爱你", pinyin: "wǒ ài nǐ", meaning: "Tôi yêu bạn", mastered: false }
+{ chinese: "贵", pinyin: "guì", meaning: "đắt, quý", mastered: false },
+{ chinese: "度", pinyin: "dù", meaning: "độ ( Độ C)", mastered: false }
 
       ]
 },
@@ -4809,8 +5358,8 @@ id: 2,
 title: "Bài 2: Đã học",
 color: "#3498db",
 vocabulary: [
-{ chinese: "一再", pinyin: "yízài", meaning: "nhiều lần", mastered: false },
-{ chinese: "酸", pinyin: "suān", meaning: "chua", mastered: false },
+{ chinese: "刚", pinyin: "gāng", meaning: "vừa", mastered: false },
+{ chinese: "万", pinyin: "wàn", meaning: "Vạn", mastered: false },
 { chinese: "更新", pinyin: "gēngxīn", meaning: "Cập nhật", mastered: false },
 { chinese: "我爱你", pinyin: "wǒ ài nǐ", meaning: "Tôi yêu bạn", mastered: false },
 { chinese: "朋友", pinyin: "péng yǒu", meaning: "Bạn bè", mastered: false },
@@ -4868,7 +5417,6 @@ id: 5,
 title: "Bài 5: ",
 color: "#3498db",
 vocabulary: [
-{ chinese: "工作", pinyin: "gōng zuò", meaning: "Công việc" , mastered: false },
 { chinese: "公司", pinyin: "gōng sī", meaning: "Công ty" , mastered: false },
 { chinese: "电脑", pinyin: "diàn nǎo", meaning: "Máy tính" , mastered: false },
 { chinese: "会议", pinyin: "huì yì", meaning: "Cuộc họp" , mastered: false },
@@ -4916,11 +5464,376 @@ id: 9,
 title: "Bài 9: ",
 color: "#3498db",
 vocabulary: [
-{ chinese: "医院", pinyin: "yī yuàn", meaning: "Bệnh viện" , mastered: false },
-{ chinese: "医生", pinyin: "yī shēng", meaning: "Bác sĩ" , mastered: false },
-{ chinese: "生病", pinyin: "shēng bìng", meaning: "Ốm", mastered: false  },
-{ chinese: "药", pinyin: "yào", meaning: "Thuốc" , mastered: false },
-{ chinese: "健康", pinyin: "jiàn kāng", meaning: "Sức khỏe", mastered: false  }
+{ chinese: "一再", pinyin: "yízài", meaning: "nhiều lần", mastered: false },
+{ chinese: "酸", pinyin: "suān", meaning: "chua", mastered: false },
+{ chinese: "办法", pinyin: "bànfǎ", meaning: "biện pháp", mastered: false },
+{ chinese: "北宁", pinyin: "Běiníng", meaning: "Bắc Ninh", mastered: false },
+{ chinese: "不客气", pinyin: "bú kèqì", meaning: "không có gì (đáp lại lời cảm ơn)", mastered: false },
+{ chinese: "聪明", pinyin: "cōngmíng", meaning: "thông minh", mastered: false },
+{ chinese: "省", pinyin: "Shěng", meaning: "tỉnh", mastered: false },
+{ chinese: "质量", pinyin: "zhìliàng", meaning: "chất lượng", mastered: false },
+{ chinese: "类型", pinyin: "lèi xíng", meaning: "loại hình", mastered: false },
+{ chinese: "练习", pinyin: "liànxí", meaning: "luyện tập", mastered: false },
+{ chinese: "检查", pinyin: "jiǎnchá", meaning: "kiểm tra", mastered: false },
+{ chinese: "衣服", pinyin: "yīfú", meaning: "Quần áo", mastered: false },
+{ chinese: "百分之", pinyin: "Bǎi fēn zhī", meaning: "Phần trăm", mastered: false },
+{ chinese: "先", pinyin: "xiān", meaning: "Trước, trước tiên", mastered: false },
+{ chinese: "好久", pinyin: "hǎo jiǔ", meaning: "Khá lâu, đã lâu rồi", mastered: false },
+{ chinese: "最近", pinyin: "zuìjìn", meaning: "gần đây", mastered: false },
+{ chinese: "高兴", pinyin: "gāo xìng", meaning: "Vui", mastered: false },
+{ chinese: "认识", pinyin: "rèn shi", meaning: "nhận biết, làm quen", mastered: false },
+{ chinese: "先走了", pinyin: "xiān zǒu le", meaning: "đi trước đây", mastered: false },
+{ chinese: "会", pinyin: "huì", meaning: "sẽ, biết (kỹ năng)", mastered: false },
+{ chinese: "有点", pinyin: "yǒudiǎn", meaning: "một chút, hơi", mastered: false },
+{ chinese: "不太", pinyin: "bútài", meaning: "không quá", mastered: false },
+{ chinese: "灯", pinyin: "dēng", meaning: "đèn", mastered: false },
+{ chinese: "灯光", pinyin: "dēngguāng", meaning: "Ánh sáng", mastered: false },
+{ chinese: "里面", pinyin: "lǐmiàn", meaning: "Bên trong", mastered: false },
+{ chinese: "外面", pinyin: "wàimiàn", meaning: "Bên ngoài", mastered: false },
+{ chinese: "每", pinyin: "měi", meaning: "mỗi", mastered: false },
+{ chinese: "站", pinyin: "zhàn", meaning: "Trạm", mastered: false },
+{ chinese: "甜", pinyin: "tián", meaning: "ngọt", mastered: false },
+{ chinese: "第", pinyin: "dì", meaning: "thứ", mastered: false },
+{ chinese: "玩", pinyin: "wán", meaning: "chơi", mastered: false },
+{ chinese: "两千", pinyin: "Liǎng qiān", meaning: "Hai nghìn", mastered: false },
+{ chinese: "亿", pinyin: "Yì", meaning: "trăm triệu", mastered: false },
+{ chinese: "食物", pinyin: "shí wù", meaning: "Thức ăn", mastered: false },
+{ chinese: "茶", pinyin: "chá", meaning: "Trà", mastered: false },
+{ chinese: "太棒", pinyin: "tàibàng", meaning: "Giỏi quá", mastered: false },
+{ chinese: "几", pinyin: "jǐ", meaning: "mấy", mastered: false },
+{ chinese: "面条", pinyin: "miàn tiáo", meaning: "Mỳ", mastered: false },
+{ chinese: "静置", pinyin: "jìng zhì", meaning: "Đứng yên", mastered: false },
+{ chinese: "过去", pinyin: "guòqù", meaning: "quá khứ", mastered: false },
+{ chinese: "替代", pinyin: "tìdài", meaning: "thay thế", mastered: false },
+{ chinese: "来", pinyin: "lái", meaning: "Đến đây", mastered: false },
+{ chinese: "停", pinyin: "tíng", meaning: "dừng", mastered: false },
+{ chinese: "停下", pinyin: "tíngxià", meaning: "dừng lại", mastered: false },
+{ chinese: "键盘", pinyin: "jiàn pán", meaning: "bàn phím", mastered: false },
+{ chinese: "司机", pinyin: "sījī", meaning: "lái xe, tài xế", mastered: false },
+{ chinese: "为了", pinyin: "wèi le", meaning: "Để", mastered: false },
+{ chinese: "前天", pinyin: "qián tiān", meaning: "Ngày hôm kia", mastered: false },
+{ chinese: "可以", pinyin: "kěyǐ", meaning: "có thể", mastered: false },
+{ chinese: "能", pinyin: "néng", meaning: "Có thể", mastered: false },
+{ chinese: "仍然", pinyin: "réng rán", meaning: "vẫn", mastered: false },
+{ chinese: "独特", pinyin: "dútè", meaning: "đặc biệt", mastered: false },
+{ chinese: "还", pinyin: "hái", meaning: "vẫn, còn", mastered: false },
+{ chinese: "博士", pinyin: "bóshì", meaning: "tiến sỹ", mastered: false },
+{ chinese: "助理", pinyin: "zhùlǐ", meaning: "Trợ lý", mastered: false },
+{ chinese: "工程师", pinyin: "Gōngchéngshī", meaning: "Kỹ sư", mastered: false },
+{ chinese: "农夫", pinyin: "Nóngfū", meaning: "nông dân", mastered: false },
+{ chinese: "来自", pinyin: "láizì", meaning: "Đến từ", mastered: false },
+{ chinese: "家", pinyin: "Jiā", meaning: "nhà", mastered: false },
+{ chinese: "叫", pinyin: "Jiào", meaning: "được gọi là, tên là", mastered: false },
+{ chinese: "不过", pinyin: "bù guò", meaning: "nhưng, có điều", mastered: false },
+{ chinese: "过年", pinyin: "guònián", meaning: "Năm mới", mastered: false },
+{ chinese: "过期", pinyin: "guò qī", meaning: "quá hạn", mastered: false },
+{ chinese: "过奖", pinyin: "guò jiǎng", meaning: "quá khen", mastered: false },
+{ chinese: "过分", pinyin: "guò fèn", meaning: "quá đáng", mastered: false },
+{ chinese: "旁边", pinyin: "pángbiān", meaning: "bên cạnh", mastered: false },
+{ chinese: "后面", pinyin: "hòumiàn", meaning: "phía sau", mastered: false },
+{ chinese: "前面", pinyin: "qiánmiàn", meaning: "phía trước", mastered: false },
+{ chinese: "锤", pinyin: "chuí", meaning: "cái búa", mastered: false },
+{ chinese: "便宜", pinyin: "pián yi", meaning: "Rẻ", mastered: false },
+{ chinese: "汽车", pinyin: "qì chē", meaning: "Xe hơi", mastered: false },
+{ chinese: "位置", pinyin: "wèizhi", meaning: "vị trí, chỗ", mastered: false },
+{ chinese: "分钟", pinyin: "Fēnzhōng", meaning: "phút", mastered: false },
+{ chinese: "新建", pinyin: "xīnjiàn", meaning: "Tạo mới (New/Create)", mastered: false },
+{ chinese: "断线", pinyin: "duànxiàn", meaning: "Mất kết nối", mastered: false },
+{ chinese: "中午", pinyin: "zhōngwǔ", meaning: "Buổi Trưa", mastered: false },
+{ chinese: "确认", pinyin: "què rèn", meaning: "xác nhận", mastered: false },
+{ chinese: "功课", pinyin: "gōng kè", meaning: "bài tập, môn học", mastered: false },
+{ chinese: "觉得", pinyin: "jué de", meaning: "Cảm thấy", mastered: false },
+{ chinese: "钱", pinyin: "qián", meaning: "Tiền", mastered: false },
+{ chinese: "都", pinyin: "Dōu", meaning: "đều", mastered: false },
+{ chinese: "请", pinyin: "qǐng", meaning: "mời", mastered: false },
+{ chinese: "割", pinyin: "gē", meaning: "Cắt", mastered: false },
+{ chinese: "倾听", pinyin: "qīngtīng", meaning: "Lắng nghe", mastered: false },
+{ chinese: "油菜", pinyin: "yóucài", meaning: "Hiếp dâm", mastered: false },
+{ chinese: "解释", pinyin: "jiěshì", meaning: "giải thích", mastered: false },
+{ chinese: "请假", pinyin: "qǐngjià", meaning: "Nghỉ phép (xin nghỉ)", mastered: false },
+{ chinese: "聚会", pinyin: "jù huì", meaning: "tụ tập", mastered: false },
+{ chinese: "升级", pinyin: "shēngjí", meaning: "Nâng cấp", mastered: false },
+{ chinese: "编辑", pinyin: "biānjí", meaning: "Chỉnh sửa (Edit)", mastered: false },
+{ chinese: "白班", pinyin: "Báibān", meaning: "Ca ngày", mastered: false },
+{ chinese: "爷爷", pinyin: "yéyé", meaning: "Ông", mastered: false },
+{ chinese: "部长", pinyin: "bùzhǎng", meaning: "Bộ trưởng", mastered: false },
+{ chinese: "员工", pinyin: "yuángōng", meaning: "Công nhân", mastered: false },
+{ chinese: "啤酒", pinyin: "píjiǔ", meaning: "Bia", mastered: false },
+{ chinese: "回家", pinyin: "huí jiā", meaning: "Về nhà đi", mastered: false },
+{ chinese: "火锅", pinyin: "huǒguō", meaning: "Lẩu", mastered: false },
+{ chinese: "数量", pinyin: "shùliàng", meaning: "Số lượng", mastered: false },
+{ chinese: "六角", pinyin: "liùjiǎo", meaning: "Lục năng (bộ lục)", mastered: false },
+{ chinese: "弟弟", pinyin: "dìdì", meaning: "em trai", mastered: false },
+{ chinese: "划伤", pinyin: "huà shāng", meaning: "xước(nhẹ)", mastered: false },
+{ chinese: "登出", pinyin: "Dēngchū", meaning: "đăng xuất", mastered: false },
+{ chinese: "报警", pinyin: "baojǐng", meaning: "Báo động", mastered: false },
+{ chinese: "酒", pinyin: "jiǔ", meaning: "Rượu", mastered: false },
+{ chinese: "声音", pinyin: "shēngyīn", meaning: "âm thanh", mastered: false },
+{ chinese: "一定", pinyin: "yīdìng", meaning: "nhất định", mastered: false },
+{ chinese: "一样", pinyin: "yīyàng", meaning: "giống nhau", mastered: false },
+{ chinese: "下雨", pinyin: "xià yǔ", meaning: "mưa", mastered: false },
+{ chinese: "不足", pinyin: "bú zú", meaning: "không đủ", mastered: false },
+{ chinese: "和", pinyin: "hé", meaning: "và", mastered: false },
+{ chinese: "生病", pinyin: "shēng bìng", meaning: "Ốm", mastered: false },
+{ chinese: "健康", pinyin: "jiàn kāng", meaning: "Sức khỏe", mastered: false },
+{ chinese: "按钮", pinyin: "ànniǔ", meaning: "nút ấn", mastered: false },
+{ chinese: "登录", pinyin: "Dēnglù", meaning: "đăng nhập", mastered: false },
+{ chinese: "份", pinyin: "fèn", meaning: "phần", mastered: false },
+{ chinese: "停顿", pinyin: "tíngdùn", meaning: "Tạm dừng", mastered: false },
+{ chinese: "准确", pinyin: "zhǔn què", meaning: "chính xác", mastered: false },
+{ chinese: "鼠标", pinyin: "Shǔbiāo", meaning: "Chuột", mastered: false },
+{ chinese: "完成", pinyin: "wánchéng", meaning: "hoàn thành", mastered: false },
+{ chinese: "的", pinyin: "de", meaning: "của (thuộc tính)", mastered: false },
+{ chinese: "实际", pinyin: "shí jì", meaning: "thực tế", mastered: false },
+{ chinese: "一切", pinyin: "yī qiè", meaning: "tất cả", mastered: false },
+{ chinese: "一共", pinyin: "yīgòng", meaning: "tổng cộng", mastered: false },
+{ chinese: "连接", pinyin: "liánjiē", meaning: "kết nối", mastered: false },
+{ chinese: "送", pinyin: "sòng", meaning: "Tặng, Đưa tiễn", mastered: false },
+{ chinese: "名字", pinyin: "Míngzì", meaning: "tên", mastered: false },
+{ chinese: "拿", pinyin: "ná", meaning: "Cầm, Lấy", mastered: false },
+{ chinese: "返修", pinyin: "fǎnxiū", meaning: "Làm lại", mastered: false },
+{ chinese: "少", pinyin: "shǎo", meaning: "ít", mastered: false },
+{ chinese: "读", pinyin: "dú", meaning: "Đọc", mastered: false },
+{ chinese: "忘", pinyin: "wàng", meaning: "Quên", mastered: false },
+{ chinese: "正在", pinyin: "zhèngzài", meaning: "Đang (nhấn mạnh hơn)", mastered: false },
+{ chinese: "以前", pinyin: "yǐ qián", meaning: "Trước đây", mastered: false },
+{ chinese: "以后", pinyin: "yǐhòu", meaning: "sau này", mastered: false },
+{ chinese: "低", pinyin: "dī", meaning: "thấp", mastered: false },
+{ chinese: "继续", pinyin: "jìxù", meaning: "tiếp tục", mastered: false },
+{ chinese: "学习", pinyin: "xué xí", meaning: "Học tập", mastered: false },
+{ chinese: "改进", pinyin: "gǎijìn", meaning: "Cải tiến", mastered: false },
+{ chinese: "爱情", pinyin: "ài qíng [ái tình]", meaning: "tình yêu", mastered: false },
+{ chinese: "回答", pinyin: "huídá", meaning: "trả lời", mastered: false },
+{ chinese: "很", pinyin: "Hěn", meaning: "Rất", mastered: false },
+{ chinese: "小心", pinyin: "xiǎoxīn", meaning: "Cẩn thận", mastered: false },
+{ chinese: "螺丝", pinyin: "luósī", meaning: "Ốc vít", mastered: false },
+{ chinese: "右边", pinyin: "yòubiān", meaning: "Phải", mastered: false },
+{ chinese: "管理", pinyin: "guǎnlǐ", meaning: "Quản lý", mastered: false },
+{ chinese: "越南语", pinyin: "yuènán yǔ", meaning: "Tiếng việt", mastered: false },
+{ chinese: "写", pinyin: "xiě", meaning: "Viết", mastered: false },
+{ chinese: "电", pinyin: "diàn", meaning: "Điện", mastered: false },
+{ chinese: "冷", pinyin: "lěng", meaning: "Lạnh", mastered: false },
+{ chinese: "电钻", pinyin: "diànzuàn", meaning: "Máy khoan điện", mastered: false },
+{ chinese: "充电中", pinyin: "chōngdiàn zhōng", meaning: "Đang sạc", mastered: false },
+{ chinese: "不相信", pinyin: "bù xiāngxìn", meaning: "không tin", mastered: false },
+{ chinese: "累", pinyin: "Lèi", meaning: "mệt", mastered: false },
+{ chinese: "进", pinyin: "jìn", meaning: "Tiến", mastered: false },
+{ chinese: "放", pinyin: "fàng", meaning: "Thả, Đặt", mastered: false },
+{ chinese: "密码", pinyin: "mìmǎ", meaning: "mật mã", mastered: false },
+{ chinese: "饿", pinyin: "È", meaning: "đói", mastered: false },
+{ chinese: "备份", pinyin: "bèifèn", meaning: "Backup", mastered: false },
+{ chinese: "此", pinyin: "cǐ", meaning: "này, đây", mastered: false },
+{ chinese: "教室", pinyin: "jiào shì", meaning: "lớp học", mastered: false },
+{ chinese: "长", pinyin: "cháng", meaning: "dài", mastered: false },
+{ chinese: "完", pinyin: "wán", meaning: "xong, hoàn thành", mastered: false },
+{ chinese: "新", pinyin: "xīn", meaning: "mới", mastered: false },
+{ chinese: "也", pinyin: "yě", meaning: "cũng", mastered: false },
+{ chinese: "已经", pinyin: "yǐjīng", meaning: "đã", mastered: false },
+{ chinese: "休息", pinyin: "xiūxi", meaning: "nghỉ ngơi", mastered: false },
+{ chinese: "被", pinyin: "bèi", meaning: "bị, được (giới từ bị động)", mastered: false },
+{ chinese: "变化", pinyin: "biànhuà", meaning: "thay đổi", mastered: false },
+{ chinese: "别人", pinyin: "biérén", meaning: "người khác", mastered: false },
+{ chinese: "操作", pinyin: "Cāozuò", meaning: "Thao tác/Vận hành", mastered: false },
+{ chinese: "状态", pinyin: "zhuàngtài", meaning: "Trạng thái", mastered: false },
+{ chinese: "电量", pinyin: "Diànliàng", meaning: "Mức pin/Dung lượng điện", mastered: false },
+{ chinese: "左边", pinyin: "zuǒbiān", meaning: "Bên trái", mastered: false },
+{ chinese: "空框", pinyin: "kōng kuàng", meaning: "Lồng Trống", mastered: false },
+{ chinese: "终点", pinyin: "zhōngdiǎn", meaning: "Điểm đến", mastered: false },
+{ chinese: "订单类型", pinyin: "Dìngdān lèixíng", meaning: "Loại đơn hàng", mastered: false },
+{ chinese: "执行订单", pinyin: "zhíxíng dìngdān", meaning: "Thực thi đơn hàng", mastered: false },
+{ chinese: "订单", pinyin: "dìngdān", meaning: "Đơn hàng", mastered: false },
+{ chinese: "成功", pinyin: "Chénggōng", meaning: "Thành công", mastered: false },
+{ chinese: "搞定了", pinyin: "Gǎo dìng le", meaning: "xong việc/ổn rồi", mastered: false },
+{ chinese: "我来做", pinyin: "Wǒ lái zuò", meaning: "Để tôi làm", mastered: false },
+{ chinese: "下", pinyin: "xià", meaning: "xuống", mastered: false },
+{ chinese: "你在干什么", pinyin: "nǐzài gan shenme ？", meaning: "Bạn đang làm gì vậy?", mastered: false },
+{ chinese: "上", pinyin: "shàng", meaning: "Lên", mastered: false },
+{ chinese: "短", pinyin: "duǎn", meaning: "ngắn", mastered: false },
+{ chinese: "料框", pinyin: "liào kuàng", meaning: "Lồng có liệu", mastered: false },
+{ chinese: "刚才", pinyin: "gāngcái", meaning: "Vừa nãy / Lúc nãy", mastered: false },
+{ chinese: "工作", pinyin: "gōngzuò", meaning: "làm việc", mastered: false },
+{ chinese: "今天", pinyin: "jīn tiān", meaning: "Hôm nay", mastered: false },
+{ chinese: "输送带", pinyin: "shū sòng dài", meaning: "băng tải", mastered: false },
+{ chinese: "运行", pinyin: "yùnxíng", meaning: "Đang chạy", mastered: false },
+{ chinese: "传感器", pinyin: "chuán gǎn qì", meaning: "sensor", mastered: false },
+{ chinese: "到这里", pinyin: "dào zhèlǐ", meaning: "Đến đây", mastered: false },
+{ chinese: "哪个", pinyin: "Nǎge", meaning: "Cái nào", mastered: false },
+{ chinese: "那个", pinyin: "nàgè", meaning: "Cái đó", mastered: false },
+{ chinese: "空闲", pinyin: "kòngxián", meaning: "Rảnh", mastered: false },
+{ chinese: "这个怎么说", pinyin: "Zhège zěnme shuō", meaning: "Cái này nói như thế nào?", mastered: false },
+{ chinese: "半", pinyin: "bàn", meaning: "một nửa", mastered: false },
+{ chinese: "安全", pinyin: "ān quán [an toàn]", meaning: "an toàn", mastered: false },
+{ chinese: "快乐", pinyin: "kuàilè", meaning: "vui vẻ", mastered: false },
+{ chinese: "问题", pinyin: "wèntí", meaning: "vấn đề", mastered: false },
+{ chinese: "关", pinyin: "guān", meaning: "đóng, tắt", mastered: false },
+{ chinese: "层", pinyin: "céng", meaning: "tầng", mastered: false },
+{ chinese: "对", pinyin: "duì", meaning: "Đúng", mastered: false },
+{ chinese: "手机", pinyin: "shǒujī", meaning: "điện thoại di động", mastered: false },
+{ chinese: "电脑", pinyin: "diàn nǎo", meaning: "Máy tính", mastered: false },
+{ chinese: "给你", pinyin: "gěi nǐ", meaning: "Cho bạn", mastered: false },
+{ chinese: "设备", pinyin: "Shèbèi", meaning: "Thiết bị", mastered: false },
+{ chinese: "昨天", pinyin: "zuó tiān", meaning: "Hôm qua", mastered: false },
+{ chinese: "修理", pinyin: "xiūlǐ", meaning: "Sửa chữa", mastered: false },
+{ chinese: "看到", pinyin: "kàndào", meaning: "nhìn thấy", mastered: false },
+{ chinese: "书", pinyin: "shū", meaning: "Sách", mastered: false },
+{ chinese: "爱好", pinyin: "àihào", meaning: "sở thích", mastered: false },
+{ chinese: "办公室", pinyin: "bàngōngshì", meaning: "văn phòng", mastered: false },
+{ chinese: "安排", pinyin: "ān pái [an bài]", meaning: "sắp xếp", mastered: false },
+{ chinese: "仓库", pinyin: "cāngkù", meaning: "Nhà kho", mastered: false },
+{ chinese: "等一下", pinyin: "děngyíxià", meaning: "Chờ một chút", mastered: false },
+{ chinese: "为什么", pinyin: "wèishénme", meaning: "tại sao", mastered: false },
+{ chinese: "电梯", pinyin: "diàntī", meaning: "thang máy", mastered: false },
+{ chinese: "换", pinyin: "huàn", meaning: "đổi", mastered: false },
+{ chinese: "联系", pinyin: "liánxì", meaning: "Liên hệ", mastered: false },
+{ chinese: "明天", pinyin: "míng tiān", meaning: "Ngày mai", mastered: false },
+{ chinese: "不行", pinyin: "bùxíng", meaning: "Không được", mastered: false },
+{ chinese: "删除", pinyin: "shānchú", meaning: "Xóa (Delete)", mastered: false },
+{ chinese: "米饭", pinyin: "mǐ fàn", meaning: "Cơm", mastered: false },
+{ chinese: "商店", pinyin: "shāng diàn", meaning: "Cửa hàng", mastered: false },
+{ chinese: "别动", pinyin: "bie dong", meaning: "Đừng động", mastered: false },
+{ chinese: "水", pinyin: "shuǐ", meaning: "Nước", mastered: false },
+{ chinese: "他们", pinyin: "Tāmen", meaning: "Họ", mastered: false },
+{ chinese: "吗", pinyin: "Ma", meaning: "không (từ để hỏi)", mastered: false },
+{ chinese: "帅", pinyin: "Shuài", meaning: "đẹp trai", mastered: false },
+{ chinese: "漂亮", pinyin: "Piàoliang", meaning: "xinh gái", mastered: false },
+{ chinese: "哥哥", pinyin: "Gēge", meaning: "anh trai", mastered: false },
+{ chinese: "今年", pinyin: "Jīnnián", meaning: "năm nay", mastered: false },
+{ chinese: "越南", pinyin: "Yuènán", meaning: "Việt Nam", mastered: false },
+{ chinese: "中国", pinyin: "Zhōngguó", meaning: "Trung Quốc", mastered: false },
+{ chinese: "帮助", pinyin: "bāngzhù", meaning: "giúp đỡ", mastered: false },
+{ chinese: "产品", pinyin: "chǎnpǐn", meaning: "sản phẩm", mastered: false },
+{ chinese: "地图", pinyin: "dì tú", meaning: "Bản đồ", mastered: false },
+{ chinese: "别", pinyin: "bié", meaning: "đừng, không được", mastered: false },
+{ chinese: "在哪里", pinyin: "zàinǎli", meaning: "Ở đâu", mastered: false },
+{ chinese: "缓存", pinyin: "huǎncún", meaning: "Lưu trữ", mastered: false },
+{ chinese: "没错", pinyin: "méicuò", meaning: "không sai, đúng rồi", mastered: false },
+{ chinese: "材料", pinyin: "cáiliào", meaning: "nguyên vật liệu, nguyên liệu", mastered: false },
+{ chinese: "归", pinyin: "guī", meaning: "trở về", mastered: false },
+{ chinese: "交换", pinyin: "jiāohuàn", meaning: "trao đổi", mastered: false },
+{ chinese: "闹", pinyin: "nào", meaning: "ồn ào, ầm ĩ", mastered: false },
+{ chinese: "要", pinyin: "yào", meaning: "cần, phải", mastered: false },
+{ chinese: "走吧", pinyin: "zǒuba", meaning: "đi thôi", mastered: false },
+{ chinese: "结婚", pinyin: "Jiéhūn", meaning: "kết hôn", mastered: false },
+{ chinese: "公司", pinyin: "gōng sī", meaning: "Công ty", mastered: false },
+{ chinese: "安静", pinyin: "ānjìng", meaning: "yên tĩnh", mastered: false },
+{ chinese: "多少", pinyin: "duōshǎo", meaning: "bao nhiêu", mastered: false },
+{ chinese: "固定", pinyin: "gùdìng", meaning: "cố định", mastered: false },
+{ chinese: "喜欢", pinyin: "Xǐhuān", meaning: "thích", mastered: false },
+{ chinese: "懂", pinyin: "dǒng", meaning: "hiểu", mastered: false },
+{ chinese: "寻找", pinyin: "xúnzhǎo", meaning: "tìm, tìm kiếm", mastered: false },
+{ chinese: "是", pinyin: "Shì", meaning: "là", mastered: false },
+{ chinese: "在", pinyin: "zài", meaning: "đang", mastered: false },
+{ chinese: "开", pinyin: "kāi", meaning: "Bật", mastered: false },
+{ chinese: "这点", pinyin: "zhè diǎn", meaning: "điểm này", mastered: false },
+{ chinese: "线", pinyin: "xiàn", meaning: "Line", mastered: false },
+{ chinese: "对不起", pinyin: "duì bu qǐ", meaning: "Xin lỗi", mastered: false },
+{ chinese: "没关系", pinyin: "méi guān xi", meaning: "Không sao", mastered: false },
+{ chinese: "五", pinyin: "wǔ", meaning: "Số năm", mastered: false },
+{ chinese: "六", pinyin: "liù", meaning: "Số sáu", mastered: false },
+{ chinese: "七", pinyin: "qī", meaning: "Số bảy", mastered: false },
+{ chinese: "八", pinyin: "bā", meaning: "Số tám", mastered: false },
+{ chinese: "九", pinyin: "jiǔ", meaning: "Số chín", mastered: false },
+{ chinese: "卖", pinyin: "mài", meaning: "Bán", mastered: false },
+{ chinese: "用", pinyin: "yòng", meaning: "Dùng", mastered: false },
+{ chinese: "出", pinyin: "chū", meaning: "Ra", mastered: false },
+{ chinese: "到", pinyin: "dào", meaning: "Đến", mastered: false },
+{ chinese: "找", pinyin: "zhǎo", meaning: "Tìm", mastered: false },
+{ chinese: "准备", pinyin: "zhǔn bèi", meaning: "Chuẩn bị", mastered: false },
+{ chinese: "厘米", pinyin: "límǐ", meaning: "xentimét", mastered: false },
+{ chinese: "偏", pinyin: "piān", meaning: "lệch", mastered: false },
+{ chinese: "跑偏", pinyin: "pǎo piān", meaning: "Lệch đường", mastered: false },
+{ chinese: "激光", pinyin: "jīguāng", meaning: "Lidar,cảm biến quét", mastered: false },
+{ chinese: "系统", pinyin: "xìtǒng", meaning: "Hệ thống", mastered: false },
+{ chinese: "赏", pinyin: "shǎng", meaning: "thưởng, khen ngợi", mastered: false },
+{ chinese: "移动", pinyin: "yídòng", meaning: "di chuyển", mastered: false },
+{ chinese: "现在", pinyin: "xiànzài", meaning: "bây giờ, hiện tại", mastered: false },
+{ chinese: "轻易", pinyin: "qīngyì", meaning: "dễ dàng", mastered: false },
+{ chinese: "岁", pinyin: "Suì", meaning: "tuổi", mastered: false },
+{ chinese: "帽子", pinyin: "màozi", meaning: "cái mũ", mastered: false },
+{ chinese: "坐", pinyin: "zuò", meaning: "ngồi", mastered: false },
+{ chinese: "时间", pinyin: "shíjiān", meaning: "thời gian", mastered: false },
+{ chinese: "老师", pinyin: "lǎo shī", meaning: "Giáo viên", mastered: false },
+{ chinese: "开始", pinyin: "kāi shǐ", meaning: "Bắt đầu", mastered: false },
+{ chinese: "见", pinyin: "jiàn", meaning: "Gặp", mastered: false },
+{ chinese: "再见", pinyin: "zài jiàn", meaning: "Tạm biệt", mastered: false },
+{ chinese: "跑", pinyin: "pǎo", meaning: "Chạy", mastered: false },
+{ chinese: "免费", pinyin: "miǎnfèi", meaning: "miễn phí", mastered: false },
+{ chinese: "加班", pinyin: "jiābān", meaning: "tăng ca", mastered: false },
+{ chinese: "按时", pinyin: "ànshí", meaning: "đúng giờ", mastered: false },
+{ chinese: "迟到", pinyin: "chídào", meaning: "muộn, đến muộn", mastered: false },
+{ chinese: "没有", pinyin: "méiyǒu", meaning: "không có", mastered: false },
+{ chinese: "下午", pinyin: "xiàwǔ", meaning: "buổi chiều", mastered: false },
+{ chinese: "结束", pinyin: "jié shù", meaning: "Kết thúc", mastered: false },
+{ chinese: "会议", pinyin: "huì yì", meaning: "Cuộc họp", mastered: false },
+{ chinese: "借", pinyin: "jiè", meaning: "Mượn, Cho mượn", mastered: false },
+{ chinese: "忙", pinyin: "máng", meaning: "bận", mastered: false },
+{ chinese: "想", pinyin: "xiǎng", meaning: "Nghĩ, Nhớ, Muốn", mastered: false },
+{ chinese: "为", pinyin: "wèi", meaning: "Vì", mastered: false },
+{ chinese: "因为", pinyin: "yīn wèi", meaning: "Bởi vì", mastered: false },
+{ chinese: "做", pinyin: "zuò", meaning: "Làm", mastered: false },
+{ chinese: "当", pinyin: "dāng", meaning: "Đảm nhận/Làm", mastered: false },
+{ chinese: "到底", pinyin: "dàodǐ", meaning: "Rốt cuộc", mastered: false },
+{ chinese: "还是", pinyin: "hái shi", meaning: "Hay là", mastered: false },
+{ chinese: "工资", pinyin: "gōngzī", meaning: "Lương", mastered: false },
+{ chinese: "高", pinyin: "gāo", meaning: "Cao", mastered: false },
+{ chinese: "早上好", pinyin: "zǎo shang hǎo", meaning: "Chào buổi sáng", mastered: false },
+{ chinese: "次", pinyin: "cì", meaning: "lần", mastered: false },
+{ chinese: "等", pinyin: "děng", meaning: "đợi", mastered: false },
+{ chinese: "妹妹", pinyin: "mèimei", meaning: "em gái", mastered: false },
+{ chinese: "晚上", pinyin: "wǎnshàng", meaning: "buổi tối", mastered: false },
+{ chinese: "逻辑", pinyin: "luójí", meaning: "Logic", mastered: false },
+{ chinese: "优化", pinyin: "yōuhuà", meaning: "tối ưu", mastered: false },
+{ chinese: "还没", pinyin: "háiméi", meaning: "Chưa", mastered: false },
+{ chinese: "处理", pinyin: "chúlǐ", meaning: "xử lí", mastered: false },
+{ chinese: "翻译", pinyin: "fānyì", meaning: "Dịch", mastered: false },
+{ chinese: "生产", pinyin: "shēngchǎn", meaning: "Sản xuất", mastered: false },
+{ chinese: "分析", pinyin: "fēnxī", meaning: "Phân tích", mastered: false },
+{ chinese: "热", pinyin: "rè", meaning: "Nóng", mastered: false },
+{ chinese: "十", pinyin: "shí", meaning: "Mười", mastered: false },
+{ chinese: "百", pinyin: "bǎi", meaning: "Trăm", mastered: false },
+{ chinese: "千", pinyin: "qiān", meaning: "Ngàn", mastered: false },
+{ chinese: "十万", pinyin: "shí wàn", meaning: "Một trăm ngàn", mastered: false },
+{ chinese: "百万", pinyin: "bǎi wàn", meaning: "Triệu", mastered: false },
+{ chinese: "千万", pinyin: "qiān wàn", meaning: "Mười triệu", mastered: false },
+{ chinese: "正常", pinyin: "zhèngcháng", meaning: "bình thường", mastered: false },
+{ chinese: "然后", pinyin: "ránhòu", meaning: "Sau đó", mastered: false },
+{ chinese: "重要", pinyin: "zhòngyào", meaning: "Quan trọng", mastered: false },
+{ chinese: "但", pinyin: "dàn", meaning: "nhưng", mastered: false },
+{ chinese: "程序", pinyin: "Chéngxù", meaning: "Chương trình", mastered: false },
+{ chinese: "刚", pinyin: "gāng", meaning: "vừa", mastered: false },
+{ chinese: "万", pinyin: "wàn", meaning: "Vạn", mastered: false },
+{ chinese: "更新", pinyin: "gēngxīn", meaning: "Cập nhật", mastered: false },
+{ chinese: "我爱你", pinyin: "wǒ ài nǐ", meaning: "Tôi yêu bạn", mastered: false },
+{ chinese: "朋友", pinyin: "péng yǒu", meaning: "Bạn bè", mastered: false },
+{ chinese: "家庭", pinyin: "jiā tíng", meaning: "Gia đình", mastered: false },
+{ chinese: "妈妈", pinyin: "mā ma", meaning: "Mẹ", mastered: false },
+{ chinese: "爸爸", pinyin: "bà ba", meaning: "Bố", mastered: false },
+{ chinese: "希望", pinyin: "xī wàng", meaning: "Hy vọng", mastered: false },
+{ chinese: "护士", pinyin: "hùshi", meaning: "y tá", mastered: false },
+{ chinese: "贵", pinyin: "guì", meaning: "đắt, quý", mastered: false },
+{ chinese: "度", pinyin: "dù", meaning: "độ ( Độ C)", mastered: false },
+{ chinese: "报名", pinyin: "bào míng", meaning: "đăng kí", mastered: false },
+{ chinese: "抄", pinyin: "chāo", meaning: "sao chép", mastered: false },
+{ chinese: "城市", pinyin: "Chéngshì", meaning: "thành phố", mastered: false },
+{ chinese: "苦", pinyin: "kǔ", meaning: "khổ, đắng", mastered: false },
+{ chinese: "秒", pinyin: "miǎo", meaning: "giây (đơn vị thời gian)", mastered: false },
+{ chinese: "回去", pinyin: "huí qù", meaning: "Về, trở về", mastered: false },
+{ chinese: "医生", pinyin: "yīshēng", meaning: "Bác sĩ", mastered: false },
+{ chinese: "撞", pinyin: "zhuàng", meaning: "đâm,va chạm", mastered: false },
+{ chinese: "任务", pinyin: "rèn wù", meaning: "nhiệm vụ", mastered: false },
+{ chinese: "辣", pinyin: "là", meaning: "cay", mastered: false },
+{ chinese: "失败", pinyin: "shī bài", meaning: "thất bại", mastered: false },
+{ chinese: "其他", pinyin: "qítā", meaning: "khác", mastered: false },
+{ chinese: "驾驶员", pinyin: "Jiàshǐ yuán", meaning: "tài xế", mastered: false },
+{ chinese: "干预", pinyin: "gān yù", meaning: "can dự, can thiệp", mastered: false },
+{ chinese: "介绍", pinyin: "Jièshào", meaning: "giới thiệu", mastered: false },
+{ chinese: "规定", pinyin: "guīdìng", meaning: "Quy định", mastered: false },
+{ chinese: "买", pinyin: "mǎi", meaning: "Mua", mastered: false },
+{ chinese: "原因", pinyin: "yuán yīn", meaning: "nguyên nhân", mastered: false },
+{ chinese: "旧", pinyin: "jiù", meaning: "cũ", mastered: false },
+{ chinese: "住", pinyin: "zhù", meaning: "sống, cư trú", mastered: false },
+{ chinese: "版本", pinyin: "bǎn běn", meaning: "phiên bản", mastered: false },
+{ chinese: "我爱你", pinyin: "wǒ ài nǐ", meaning: "Tôi yêu bạn", mastered: false }
 ]
 },
 {
@@ -17821,7 +18734,59 @@ vocabulary: [
 { chinese: "龌", pinyin: "wò", meaning: "ốc, nhơ", example: " AI-Dify", mastered: false },
 { chinese: "龙", pinyin: "lóng", meaning: "rồng", example: " AI-Dify", mastered: false },
 { chinese: "龚", pinyin: "gōng", meaning: "cung, họ", example: " AI-Dify", mastered: false },
-{ chinese: "龟", pinyin: "guī", meaning: "quy, rùa", example: " AI-Dify", mastered: false }
+{ chinese: "龟", pinyin: "guī", meaning: "quy, rùa", example: " AI-Dify", mastered: false },
+  { chinese: "滚你妈的", pinyin: "gǔn nǐ mā de", meaning: "cút mẹ mày đi", example: "VIP", mastered: false },
+  { chinese: "操你妈", pinyin: "cào nǐ mā", meaning: "đ*t mẹ mày", example: "VIP", mastered: false },
+  { chinese: "笨蛋", pinyin: "bèn dàn", meaning: "đồ ngốc", example: "VIP", mastered: false },
+  { chinese: "他妈的", pinyin: "tā mā de", meaning: "đệt mẹ / vãi l", example: "VIP", mastered: false },
+  { chinese: "妈的", pinyin: "mā de", meaning: "đệt / vãi", example: "VIP", mastered: false },
+  { chinese: "傻逼", pinyin: "shǎ bī", meaning: "thằng ngu l*n", example: "VIP", mastered: false },
+  { chinese: "煞笔", pinyin: "shà bǐ", meaning: "ngu vl (viết né)", example: "VIP", mastered: false },
+  { chinese: "白痴", pinyin: "bái chī", meaning: "thằng đần", example: "VIP", mastered: false },
+  { chinese: "脑残", pinyin: "nǎo cán", meaning: "não tàn", example: "VIP", mastered: false },
+  { chinese: "智障", pinyin: "zhì zhàng", meaning: "thiểu năng (chửi nặng)", example: "VIP", mastered: false },
+  { chinese: "去死", pinyin: "qù sǐ", meaning: "cút đi mà chết", example: "VIP", mastered: false },
+  { chinese: "滚蛋", pinyin: "gǔn dàn", meaning: "cút xéo", example: "VIP", mastered: false },
+  { chinese: "滚开", pinyin: "gǔn kāi", meaning: "cút ra", example: "VIP", mastered: false },
+  { chinese: "垃圾", pinyin: "lā jī", meaning: "đồ rác", example: "VIP", mastered: false },
+  { chinese: "废物", pinyin: "fèi wù", meaning: "đồ vô dụng", example: "VIP", mastered: false },
+  { chinese: "王八蛋", pinyin: "wáng bā dàn", meaning: "thằng chó chết", example: "VIP", mastered: false },
+  { chinese: "混蛋", pinyin: "hún dàn", meaning: "thằng khốn", example: "VIP", mastered: false },
+  { chinese: "贱人", pinyin: "jiàn rén", meaning: "con đ*", example: "VIP", mastered: false },
+  { chinese: "狗东西", pinyin: "gǒu dōngxi", meaning: "đồ chó má", example: "VIP", mastered: false },
+  { chinese: "狗屎", pinyin: "gǒu shǐ", meaning: "cứt chó", example: "VIP", mastered: false },
+  { chinese: "神经病", pinyin: "shén jīng bìng", meaning: "thằng điên", example: "VIP", mastered: false },
+  { chinese: "有病啊", pinyin: "yǒu bìng a", meaning: "bị điên à?", example: "VIP", mastered: false },
+  { chinese: "变态", pinyin: "biàn tài", meaning: "biến thái", example: "VIP", mastered: false },
+  { chinese: "死鬼", pinyin: "sǐ guǐ", meaning: "đồ chết tiệt", example: "VIP", mastered: false },
+  { chinese: "欠揍", pinyin: "qiàn zòu", meaning: "ngứa đòn", example: "VIP", mastered: false },
+  { chinese: "找死", pinyin: "zhǎo sǐ", meaning: "tìm chết", example: "VIP", mastered: false },
+  { chinese: "脑子进水", pinyin: "nǎozi jìn shuǐ", meaning: "não vô nước", example: "VIP", mastered: false },
+  { chinese: "不要脸", pinyin: "bú yào liǎn", meaning: "không biết nhục", example: "VIP", mastered: false },
+  { chinese: "贱不贱", pinyin: "jiàn bù jiàn", meaning: "có thấy nhục không?", example: "VIP", mastered: false },
+  { chinese: "有毛病", pinyin: "yǒu máo bìng", meaning: "có vấn đề à?", example: "VIP", mastered: false },
+  { chinese: "操蛋", pinyin: "cào dàn", meaning: "xui chó / nhảm l*n", example: "VIP", mastered: false },
+  { chinese: "扯淡", pinyin: "chě dàn", meaning: "xàm l", example: "VIP", mastered: false },
+  { chinese: "放屁", pinyin: "fàng pì", meaning: "nói phét", example: "VIP", mastered: false },
+  { chinese: "瞎扯", pinyin: "xiā chě", meaning: "bốc phét", example: "VIP", mastered: false },
+  { chinese: "傻缺", pinyin: "shǎ quē", meaning: "ngu đần (meme)", example: "VIP", mastered: false },
+  { chinese: "二逼", pinyin: "èr bī", meaning: "ngu level 2", example: "VIP", mastered: false },
+  { chinese: "低能", pinyin: "dī néng", meaning: "kém trí", example: "VIP", mastered: false },
+  { chinese: "蠢货", pinyin: "chǔn huò", meaning: "đồ ngu", example: "VIP", mastered: false },
+  { chinese: "死妈脸", pinyin: "sǐ mā liǎn", meaning: "mặt như đưa đám (cực thô)", example: "VIP", mastered: false },
+  { chinese: "操了", pinyin: "cào le", meaning: "vãi thật / đệt rồi", example: "VIP", mastered: false },
+  { chinese: "你有毒吧", pinyin: "nǐ yǒu dú ba", meaning: "mày bị khùng à", example: "VIP", mastered: false },
+  { chinese: "你脑子坏了", pinyin: "nǐ nǎozi huài le", meaning: "não mày hỏng rồi", example: "VIP", mastered: false },
+  { chinese: "什么鬼", pinyin: "shénme guǐ", meaning: "cái quái gì vậy", example: "VIP", mastered: false },
+  { chinese: "狗日的", pinyin: "gǒu rì de", meaning: "đồ chó đẻ", example: "VIP", mastered: false },
+  { chinese: "欠骂", pinyin: "qiàn mà", meaning: "thiếu chửi", example: "VIP", mastered: false },
+  { chinese: "真他妈烦", pinyin: "zhēn tā mā fán", meaning: "phiền vl", example: "VIP", mastered: false },
+  { chinese: "有完没完", pinyin: "yǒu wán méi wán", meaning: "chưa xong à?", example: "VIP", mastered: false },
+  { chinese: "烦死了", pinyin: "fán sǐ le", meaning: "phiền chết đi được", example: "VIP", mastered: false },
+  { chinese: "你大爷的", pinyin: "nǐ dà yé de", meaning: "vãi ông nội mày", example: "VIP", mastered: false },
+  { chinese: "我服了", pinyin: "wǒ fú le", meaning: "tao lạy mày", example: "VIP", mastered: false }
+
+
 
     ]
   },
@@ -23181,18 +24146,42 @@ function estimateSpeechDuration(text, rate = 1) {
     return Math.max(baseDuration / rate, 0.5); // Tối thiểu 0.5s
 }
 
-let speechQueue = Promise.resolve();
 let earlyHideTimer = null;
+let speechQueue = Promise.resolve();
+
 function speak(text, force = false) {
     if (!force && !isSoundOn) return;
 
-    window.speechSynthesis.cancel();
-    if (earlyHideTimer) clearTimeout(earlyHideTimer);
+    // Thêm vào hàng đợi
+    speechQueue = speechQueue.then(() => {
+        return new Promise((resolve) => {
+            try {
+                // Nếu đang nói, hủy và đợi một chút
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    // Đợi một chút để cancel hoàn tất
+                    setTimeout(() => {
+                        startSpeaking(text, resolve);
+                    }, 50);
+                } else {
+                    startSpeaking(text, resolve);
+                }
+            } catch (error) {
+                console.error('Lỗi không mong muốn trong speak:', error);
+                resolve(); // Tiếp tục queue ngay cả khi lỗi
+            }
+        });
+    });
 
+    // Xử lý lỗi trong queue để tránh treo
+    speechQueue = speechQueue.catch(() => {});
+}
+
+function startSpeaking(text, resolve) {
     const msg = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
 
-    // --- Chọn giọng (giữ nguyên) ---
+    // Chọn giọng (giữ nguyên code cũ)
     let voiceFound = false;
     if (selectedVoice) {
         const currentVoice = voices.find(v => v.voiceURI === selectedVoice.voiceURI);
@@ -23216,30 +24205,30 @@ function speak(text, force = false) {
     msg.rate = speechRate;
     msg.pitch = speechPitch;
 
-    // --- Sự kiện ---
-msg.onstart = () => {
-    isSpeaking = true;
-    showVisualizer();
+    msg.onstart = () => {
+        isSpeaking = true;
+        showVisualizer();
 
-    const duration = estimateSpeechDuration(text, speechRate);
-    const minVisibleTime = 1; // tối thiểu 0.6 giây
-    const visibleDuration = Math.max(duration, minVisibleTime);
-    const transitionTime = 0.4;
-    let hideTime = (visibleDuration - transitionTime) * 1000;
-    if (hideTime < 0) hideTime = 0;
+        const duration = estimateSpeechDuration(text, speechRate);
+        const minVisibleTime = 1;
+        const visibleDuration = Math.max(duration, minVisibleTime);
+        const transitionTime = 0.4;
+        let hideTime = (visibleDuration - transitionTime) * 1000;
+        if (hideTime < 0) hideTime = 0;
 
-    clearTimeout(earlyHideTimer);
-    earlyHideTimer = setTimeout(() => {
-        if (isSpeaking) {
-            hideVisualizer();
-        }
-    }, hideTime);
-};
+        clearTimeout(earlyHideTimer);
+        earlyHideTimer = setTimeout(() => {
+            if (isSpeaking) {
+                hideVisualizer();
+            }
+        }, hideTime);
+    };
+
     msg.onend = () => {
         clearTimeout(earlyHideTimer);
         isSpeaking = false;
-        // Đảm bảo ẩn nếu chưa kịp ẩn
         hideVisualizer();
+        resolve(); // Hoàn thành promise
     };
 
     msg.onerror = (event) => {
@@ -23247,13 +24236,12 @@ msg.onstart = () => {
         isSpeaking = false;
         hideVisualizer();
         console.error('Lỗi phát âm:', event);
+        // Vẫn resolve để queue tiếp tục
+        resolve();
     };
 
     window.speechSynthesis.speak(msg);
 }
-
-
-
 function showVisualizer() {
     const el = document.getElementById('audio-visualizer');
     if (el) el.classList.add('visible');
@@ -23505,118 +24493,7 @@ function updateInputAnimations(height) {
     }
 }
 
-function setupKeyboardHandling() {
-    const chineseInput = document.getElementById('chineseInput');
-    const body = document.body;
-    
-    if (!chineseInput) return;
-    
-    // Theo dõi sự thay đổi chiều cao window (cách phát hiện bàn phím)
-    let initialHeight = window.innerHeight;
-    
-    window.addEventListener('resize', function() {
-        const currentHeight = window.innerHeight;
-        const heightDifference = initialHeight - currentHeight;
-        
-        // Nếu chiều cao giảm đáng kể -> bàn phím mở
-        if (heightDifference > 200) {
-            body.classList.add('keyboard-open');
-            adjustLayoutForKeyboard(true);
-        } else {
-            body.classList.remove('keyboard-open');
-            adjustLayoutForKeyboard(false);
-        }
-        
-        initialHeight = currentHeight;
-    });
-    
-    // Xử lý sự kiện focus/blur
-    chineseInput.addEventListener('focus', function() {
-        setTimeout(() => {
-            body.classList.add('keyboard-open');
-            adjustLayoutForKeyboard(true);
-        }, 300);
-    });
-    
-    chineseInput.addEventListener('blur', function() {
-        setTimeout(() => {
-            body.classList.remove('keyboard-open');
-            adjustLayoutForKeyboard(false);
-        }, 300);
-    });
-    
-    // Ngăn chặn hành vi mặc định khi touch
-    chineseInput.addEventListener('touchstart', function(e) {
-        e.stopPropagation();
-    }, { passive: true });
-    
-    chineseInput.addEventListener('touchend', function(e) {
-        e.stopPropagation();
-    }, { passive: true });
-}
 
-function adjustLayoutForKeyboard(keyboardOpen) {
-    const gameScreen = document.getElementById('gameScreen');
-    const inputArea = document.querySelector('.input-area');
-    const wordDisplay = document.querySelector('.word-display');
-    
-    if (!gameScreen || !inputArea || !wordDisplay) return;
-    
-    if (keyboardOpen) {
-        // Khi bàn phím mở
-        wordDisplay.style.paddingBottom = '20px';
-        inputArea.style.paddingBottom = 'env(safe-area-inset-bottom)';
-        
-        // Cuộn đến input area nếu cần
-        setTimeout(() => {
-            inputArea.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center',
-                inline: 'nearest'
-            });
-        }, 100);
-    } else {
-        // Khi bàn phím đóng
-        wordDisplay.style.paddingBottom = '';
-        inputArea.style.paddingBottom = '';
-    }
-}
-
-// Tối ưu sự kiện touch cho mobile
-function optimizeTouchEvents() {
-    // Giảm độ trễ touch
-    document.addEventListener('touchstart', function() {}, { passive: true });
-    document.addEventListener('touchmove', function() {}, { passive: true });
-    
-    // Ngăn double tap zoom
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(event) {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
-            event.preventDefault();
-        }
-        lastTouchEnd = now;
-    }, { passive: false });
-}
-
-// Khởi tạo khi DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-    setupKeyboardHandling();
-    optimizeTouchEvents();
-    
-    // Thêm lớp hỗ trợ touch
-    document.body.classList.add('touch-device');
-});
-
-// Xử lý orientation change
-window.addEventListener('orientationchange', function() {
-    setTimeout(() => {
-        // Đảm bảo layout được điều chỉnh lại
-        if (document.activeElement === document.getElementById('chineseInput')) {
-            adjustLayoutForKeyboard(true);
-        }
-    }, 300);
-});
 // Hàm lưu giá trị vào localStorage
 function saveInputHeight() {
     localStorage.setItem('inputAreaHeight', inputAreaHeight.toString());
@@ -24025,7 +24902,8 @@ document.getElementById('restartBtn').addEventListener('click', function() {
     document.querySelector('.time-bar-container').style.display = 'none';
     document.querySelector('.start-instruction').style.display = 'block';
     document.getElementById('wordCounter').style.display = 'none';
-    
+    document.getElementById('wordWriteCount').style.display = 'none';
+document.getElementById('correctStreakCounter').style.display = 'none';
     document.querySelectorAll('.pinyin-box').forEach(box => {
         box.classList.remove('used');
     });
@@ -24067,7 +24945,7 @@ currentLesson = lesson;
 
 
 
-
+document.getElementById('helpBtn').style.display = 'none';
 document.getElementById('darkModeToggle').style.display = 'none';
 document.getElementById('currentLessonTitleDisplay').textContent = lesson.title;
 document.getElementById('lessonSelection').style.display = 'none';
@@ -24105,6 +24983,7 @@ function updatePinyinBoxes() {
     const box = document.createElement('div');
     box.className = 'pinyin-box';
     container.appendChild(box);
+    updateWordCounter();
   }
 }
 
@@ -24131,14 +25010,106 @@ darkModeToggle.addEventListener('click', () => {
 if (savedMode === 'enabled') {
   darkModeToggle.textContent = '☀️';
 }
+let currentWordWriteCount = 0;
+let masteryThreshold = 30; // Đếm số từ đúng liên tiếp toàn cục
+let currentWordCorrectStreak = 0; // Đếm số từ đúng liên tiếp của từ hiện tại
+
 function updateWordCounter() {
-  if (!gameActive) return;
-  
-  document.getElementById('currentWordIndex').textContent = totalWordsAttempted;
-  const pinyinHeight = document.getElementById('pinyinIndicator').offsetHeight;
-  const topPosition = `${pinyinHeight + 68}px`;
-  document.getElementById('wordCounter').style.top = topPosition;
+    if (!gameActive) return;
+
+    const currentWord = remainingWords[currentWordIndex];
+    const wordKey = `${currentWord.chinese}|${currentWord.pinyin}`;
+
+    if (!wordStats[wordKey]) {
+        wordStats[wordKey] = {
+            writeCount: 0,
+            correctStreak: 0
+        };
+    }
+
+    const stats = wordStats[wordKey];
+    currentWordWriteCount = stats.writeCount;
+    let currentWordCorrectStreak = stats.correctStreak;
+
+    // Cập nhật nội dung
+    document.getElementById('currentWordIndex').textContent = totalWordsAttempted;
+    document.getElementById('writeCount').textContent = '#' + stats.writeCount;
+    
+    const streakCountElement = document.getElementById('streakCount');
+    streakCountElement.textContent = currentWordCorrectStreak;
+
+    // Xử lý màu sắc mượt mà hơn
+    const percentage = (currentWordCorrectStreak / masteryThreshold) * 100;
+    
+    // Sử dụng CSS variables để chuyển màu mượt mà
+    if (percentage >= 90) {
+        // 90% trở lên: màu vàng nhẹ với hiệu ứng
+        streakCountElement.style.setProperty('--streak-opacity', '0.7');
+        streakCountElement.style.setProperty('--streak-color', '255, 215, 0');
+        streakCountElement.classList.add('warning');
+    } else {
+        // Dưới 90%: màu xanh lá với độ đậm tăng dần
+        const opacity = 0.3 + (percentage / 100) * 0.7;
+        streakCountElement.style.setProperty('--streak-opacity', opacity.toString());
+        streakCountElement.style.setProperty('--streak-color', '0, 255, 0');
+        streakCountElement.classList.remove('warning');
+    }
+
+    const pinyinHeight = document.getElementById('pinyinIndicator').offsetHeight;
+    const topPosition = `${pinyinHeight + 80}px`;
+    document.querySelector('.counters-container').style.top = topPosition;
+
+    // SỬA: Chỉ kiểm tra mastery nếu từ chưa thuộc
+    if (!currentWord.mastered && currentWordCorrectStreak >= masteryThreshold && currentWordIndex < remainingWords.length) {
+        markWordAsMastered(currentWord);
+    }
 }
+
+
+function markWordAsMastered(word) {
+    if (!word) return;
+
+    const lesson = lessons.find(l => l.id === currentLesson.id);
+    if (lesson) {
+        const wordInLesson = lesson.vocabulary.find(w =>
+            w.chinese === word.chinese && w.pinyin === word.pinyin
+        );
+
+        if (wordInLesson) {
+            const wordKey = `${word.chinese}|${word.pinyin}`;
+            const stats = wordStats[wordKey] || { correctStreak: 0 };
+
+            // SỬA: Reset streak trước khi kiểm tra điều kiện
+            if (wordInLesson.mastered) {
+                stats.correctStreak = 0;
+                return; // Từ đã thuộc rồi, không cần xử lý tiếp
+            }
+
+            // Kiểm tra điều kiện chính xác - sử dụng stats.correctStreak
+            if (stats.correctStreak >= masteryThreshold) {
+                wordInLesson.mastered = true;
+                stats.correctStreak = 0; // Reset streak sau khi đánh dấu thuộc
+                saveDataToStorage();
+
+                if (showRewardMessage) {
+                    showToast(`🎉 Từ "${word.chinese}" đã được đánh dấu là đã thuộc (đạt ${masteryThreshold} lần đúng liên tiếp)!`, 'success');
+                }
+            }
+        }
+    }
+}
+
+
+document.getElementById('masteryThreshold').addEventListener('change', function() {
+    let value = parseInt(this.value);
+    if (isNaN(value) || value < 5 || value > 100) {
+        value = 30;
+        this.value = value;
+    }
+    masteryThreshold = value;
+    saveTimeSettings();
+});
+let wordStats = {};
 
 function resetGameState() {
     currentDisplayedWord = null;
@@ -24151,6 +25122,9 @@ function resetGameState() {
     gameActive = false;
     toggleHeightSlider(false);
     hasShownPinyin = false;
+
+    currentWordWriteCount = 0;
+    correctStreak = 0;
 
   displayRadicalAnalysis(showRadicalAnalysis ? '' : '');
   const container = document.querySelector('#gameScreen .container');
@@ -24184,8 +25158,10 @@ function resetGameState() {
     document.getElementById('timeProgress').style.width = '100%';
     document.getElementById('timeProgress').style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
     
-
+document.querySelector('.counters-container').style.display = 'none';
     document.getElementById('wordCounter').style.display = 'none';
+    document.getElementById('wordWriteCount').style.display = 'none';
+document.getElementById('correctStreakCounter').style.display = 'none';
     document.querySelector('.word-display').style.display = 'none';
     document.querySelector('.input-area').classList.remove('visible', 'hiding');
     document.querySelector('.time-bar-container').style.display = 'none';
@@ -24235,6 +25211,7 @@ function renderLessonSidebar() {
     sidebarItems.appendChild(item);
   });
 }
+
 
 // ========== HÀM KHỞI ĐỘNG GAME ========== //
 // Sự kiện xuất từ điển
@@ -24316,14 +25293,9 @@ function updatePreview() {
         const currentWord = remainingWords[currentWordIndex];
         
         if (showExampleInstead) {
-            // CHỈNH SỬA: Tách và chỉ hiển thị phần chữ Hán (trước dấu -)
-            if (currentWord.example && currentWord.example.trim() !== '') {
-                const exampleParts = currentWord.example.split(' - ');
-                const chineseExample = exampleParts[0].trim(); // Chỉ lấy phần trước dấu -
-                previewElement.textContent = chineseExample;
-            } else {
-                previewElement.textContent = "";
-            }
+            previewElement.textContent = currentWord.example && currentWord.example.trim() !== '' 
+                ? currentWord.example 
+                : "";
         } else {
             if (remainingWords.length > 1) {
                 nextWordIndex = (currentWordIndex + 1) % remainingWords.length;
@@ -24342,7 +25314,6 @@ function updatePreview() {
         previewElement.textContent = '';
     }
 }
-
 
 function initSpecialLessons() {
   const specialContainer = document.getElementById('specialLessons');
@@ -24461,18 +25432,23 @@ box.classList.remove('used');
 });
 }
 
-displayWord();
-updateWordCounter();
-chineseInput.value = '';
-chineseInput.focus();
 
 // Đảm bảo game area hiển thị
 document.getElementById('radicalAnalysis').style.display = 'block';
 document.getElementById('gameArea').style.display = 'block';
 document.getElementById('resultContainer').style.display = 'none';
 document.getElementById('wordCounter').style.display = 'block';
+document.getElementById('wordWriteCount').style.display = 'block';
+document.getElementById('correctStreakCounter').style.display = 'block';
+ document.querySelector('.counters-container').style.display = 'flex';
     correctStreak = 0; // Reset streak khi bắt đầu game mới
     maxStreak = 0;
+
+updateWordCounter();
+
+displayWord();
+chineseInput.value = '';
+chineseInput.focus();
 }
 
 document.getElementById('dictionaryBtn').addEventListener('click', function() {
@@ -24535,13 +25511,14 @@ function saveTimeSettings() {
     showFirework: showFirework,
     listenWriteMode: listenWriteMode,
     postSpeak: postSpeak,
-    isSoundOn: isSoundOn  
+    isSoundOn: isSoundOn,
+    masteryThreshold: masteryThreshold
   }));
   console.log('Đã lưu cài đặt thời gian:', {correctBonusTime, wrongBonusTime});
 }
 document.getElementById('wordCount').addEventListener('change', function() {
   let value = parseInt(this.value);
-  if (isNaN(value) || value < 1 || value > 1000) {
+  if (isNaN(value) || value < 5 || value > 1000) {
     value = 20;
     this.value = value;
   }
@@ -24555,8 +25532,8 @@ document.getElementById('wordCount').addEventListener('change', function() {
 
 let currentDictionaryLessonId = 1; 
 
-const INITIAL_LOAD_COUNT = 200;
-const LOAD_MORE_COUNT = 200;// Số lượng từ mỗi lần load ở từ điển 
+const INITIAL_LOAD_COUNT = 100;
+const LOAD_MORE_COUNT = 100;// Số lượng từ mỗi lần load ở từ điển 
 
 let currentDisplayedCount = 0;
 let filteredWords = [];
@@ -24636,9 +25613,6 @@ document.querySelector('.lesson-tab').classList.add('active');
 }
 
 
-
-// ========== LƯU VÀ TẢI DỮ LIỆU ========== //
-// Lưu dữ liệu vào localStorage
 function saveDataToStorage() {
   try {
     // ĐẢM BẢO LƯU CẢ THUỘC TÍNH color
@@ -24656,61 +25630,46 @@ function saveDataToStorage() {
   }
 }
 
-// Tải dữ liệu từ localStorage
 function loadDataFromStorage() {
-  const savedData = localStorage.getItem('hanNguLessons');
-  if (savedData) {
-    try {
-      const parsedData = JSON.parse(savedData);
-      
-      // Xóa mảng lessons hiện tại
-      lessons.length = 0;
+    const savedData = localStorage.getItem('hanNguLessons');
+    if (savedData) {
+        try {
+            const parsedData = JSON.parse(savedData);
+            // Xóa mảng lessons hiện tại
+            lessons.length = 0;
 
-      // Thêm dữ liệu từ localStorage vào
-      parsedData.forEach(lesson => {
-        // ĐẢM BẢO KHÔI PHỤC MÀU SẮC
-        const color = lesson.color || generateColorForLesson(lesson.id);
-        
-        // Đảm bảo mỗi từ trong vocabulary có trường example
-        const vocabulary = (lesson.vocabulary || []).map(word => {
-          const newWord = {
-            chinese: word.chinese || '',
-            pinyin: word.pinyin || '',
-            meaning: word.meaning || '',
-            example: word.example || '',
-            mastered: word.mastered || false
-          };
-          
-          for (const key in word) {
-            if (!newWord.hasOwnProperty(key)) {
-              newWord[key] = word[key];
+            // Thêm dữ liệu từ localStorage vào
+            parsedData.forEach(lesson => {
+                const color = lesson.color || generateColorForLesson(lesson.id);
+                const vocabulary = (lesson.vocabulary || []).map(word => ({
+                    chinese: word.chinese || '',
+                    pinyin: word.pinyin || '',
+                    meaning: word.meaning || '',
+                    example: word.example || '',
+                    mastered: word.mastered || false
+                }));
+
+                lessons.push({
+                    id: lesson.id,
+                    title: lesson.title,
+                    color: color,
+                    vocabulary: vocabulary
+                });
+            });
+            console.log('Đã tải dữ liệu từ localStorage với màu sắc');
+        } catch (e) {
+            console.error('Lỗi khi đọc dữ liệu từ localStorage:', e);
+            // Nếu lỗi, giữ nguyên lessons mặc định (đã có từ đầu)
+        }
+    } else {
+        // Nếu không có dữ liệu lưu, thêm màu cho các bài học mặc định
+        lessons.forEach(lesson => {
+            if (!lesson.color) {
+                lesson.color = generateColorForLesson(lesson.id);
             }
-          }
-          
-          return newWord;
         });
-
-        lessons.push({
-          id: lesson.id,
-          title: lesson.title,
-          color: color, // KHÔI PHỤC MÀU
-          vocabulary: vocabulary
-        });
-      });
-      
-      console.log('Đã tải dữ liệu từ localStorage với màu sắc');
-    } catch (e) {
-      console.error('Lỗi khi đọc dữ liệu từ localStorage:', e);
+        saveDataToStorage();
     }
-  } else {
-    // Nếu không có dữ liệu lưu, thêm màu cho các bài học mặc định
-    lessons.forEach(lesson => {
-      if (!lesson.color) {
-        lesson.color = generateColorForLesson(lesson.id);
-      }
-    });
-    saveDataToStorage();
-  }
 }
 
 
@@ -24898,12 +25857,9 @@ function createWordCard(wordData, lessonId) {
                 <p><strong>Nghĩa:</strong> ${capitalizeVietnamese(escapedMeaning)}</p>
         `;
         
-if (word.example && word.example.trim() !== '') {
-  // Tách phần chữ Hán (trước dấu -)
-  const exampleParts = word.example.split(' - ');
-  const chineseExample = exampleParts[0].trim();
-  htmlContent += `<p class="word-example"><strong>Ví dụ:</strong> ${chineseExample}</p>`;
-}
+        if (word.example && word.example.trim() !== '') {
+            htmlContent += `<p class="word-example"><strong>Ví dụ:</strong> ${escapedExample}</p>`;
+        }
         
         htmlContent += `</div>`;
     }
@@ -24916,7 +25872,7 @@ if (word.example && word.example.trim() !== '') {
             <button class="move-btn" data-lesson="${lessonId}" data-index="${originalIndex}">🔗</button>
             <button class="mastered-btn ${word.mastered ? 'mastered' : ''}" 
                     data-lesson="${lessonId}" data-index="${originalIndex}">
-                ${word.mastered ? '✓' : '✗'}
+                ${word.mastered ? '✓ Đã thuộc' : 'Đánh dấu'}
             </button>
         </div>
     `;
@@ -25428,18 +26384,28 @@ function optimizedReloadLesson(lessonId) {
 function toggleMastered(lessonId, wordIndex) {
     const lesson = lessons.find(l => l.id === lessonId);
     if (lesson && wordIndex < lesson.vocabulary.length) {
-        lesson.vocabulary[wordIndex].mastered = !lesson.vocabulary[wordIndex].mastered;
+        const word = lesson.vocabulary[wordIndex];
+        word.mastered = !word.mastered;
+
+        // SỬA: Reset streak khi thay đổi trạng thái mastered
+        const wordKey = `${word.chinese}|${word.pinyin}`;
+        if (wordStats[wordKey]) {
+            wordStats[wordKey].correctStreak = 0;
+        }
+
         saveDataToStorage();
-        
-        // CHỈ CẬP NHẬT NÚT, KHÔNG RELOAD TOÀN BỘ
+        saveWordStatsToStorage();
+
+        // Cập nhật giao diện
         const masteredBtn = document.querySelector(`.mastered-btn[data-lesson="${lessonId}"][data-index="${wordIndex}"]`);
         if (masteredBtn) {
-            masteredBtn.textContent = lesson.vocabulary[wordIndex].mastered ? '✓' : '❌';
-            masteredBtn.classList.toggle('mastered', lesson.vocabulary[wordIndex].mastered);
+            masteredBtn.textContent = word.mastered ? '✓ Đã thuộc' : 'Đánh dấu';
+            masteredBtn.classList.toggle('mastered', word.mastered);
         }
-         smartReloadLesson(lessonId);
+        smartReloadLesson(lessonId);
     }
 }
+
 function filterWords(searchTerm) {
     const lesson = lessons.find(l => l.id == currentDictionaryLessonId);
     if (!lesson) return;
@@ -26005,6 +26971,8 @@ clearInterval(wordTimer);
 // Ẩn các phần tử không cần thiết
     // Sửa cách ẩn các phần tử
     document.getElementById('wordCounter').style.display = 'none';
+    document.getElementById('wordWriteCount').style.display = 'none';
+document.getElementById('correctStreakCounter').style.display = 'none';
     document.querySelector('.word-display').style.display = 'none';
     document.getElementById('pinyinIndicator').style.display = 'none';
     document.querySelector('.time-bar-container').style.display = 'none';
@@ -26335,19 +27303,55 @@ function checkAnswer() {
     const userAnswer = document.getElementById('chineseInput').value.trim();
     const currentWord = remainingWords[currentWordIndex];
     const targetChar = document.getElementById('targetCharacter');
+    const wordKey = `${currentWord.chinese}|${currentWord.pinyin}`;
 
-    // Reset animation và classes cũ
+    if (!wordStats[wordKey]) {
+        wordStats[wordKey] = {
+            writeCount: 0,
+            correctStreak: 0
+        };
+    }
+
+    const stats = wordStats[wordKey];
     resetAnswerAnimations(targetChar);
+    stats.writeCount++;
+    currentWordWriteCount = stats.writeCount;
 
-    // Kiểm tra đúng/sai
     const isCorrect = checkCorrectness(userAnswer, currentWord);
-    
+
     if (isCorrect) {
+        // SỬA: Chỉ tăng streak nếu từ chưa thuộc
+        if (!currentWord.mastered) {
+            stats.correctStreak++;
+            let currentWordCorrectStreak = stats.correctStreak;
+
+            // Tăng số lần đúng liên tiếp toàn cục
+            correctStreak++;
+
+            // Kiểm tra nếu đạt ngưỡng mastery thì đánh dấu đã thuộc
+            if (currentWordCorrectStreak >= masteryThreshold) {
+                markWordAsMastered(currentWord);
+            }
+        }
+
         handleCorrectAnswer(currentWord, targetChar);
     } else {
+        // Reset số lần viết đúng liên tiếp khi sai
+        stats.correctStreak = 0;
+        let currentWordCorrectStreak = 0;
+        
+        // Reset số lần đúng liên tiếp toàn cục
+        correctStreak = 0;
+        
         handleWrongAnswer(currentWord, targetChar);
     }
+    
+    saveWordStatsToStorage();
+    updateWordCounter();
+    checkAndShowReward();
 }
+
+
 
 function resetAnswerAnimations(targetChar) {
     if (targetChar.classList.contains('correct-answer') || targetChar.classList.contains('wrong-answer')) {
@@ -26393,15 +27397,14 @@ function handleWrongAnswer(currentWord, targetChar) {
     correctStreak = 0;
     targetChar.classList.add('wrong-answer');
 
-    // Thêm vào danh sách sai nếu là lần đầu
     if (!hasShownPinyin && !wrongWords.some(w => w.chinese === currentWord.chinese)) {
         wrongWords.push({
             ...currentWord,
             lessonId: currentLesson.id
         });
     }
-
-     showAnswerFeedback(currentWord, false);
+showAnswerFeedback(currentWord, false);
+    // Xử lý các trường hợp sai - ĐÃ SỬA LOGIC
     if (pinyinShowCount <= 0) {
         // KHI HẾT PINYIN BOXES: show pinyin và next từ không cho viết lại
         handleNoPinyinLeft(currentWord, targetChar);
@@ -26424,18 +27427,6 @@ function showAnswerFeedback(currentWord, isCorrect) {
     const pinyinTooltip = document.getElementById('pinyinTooltip');
     const meaningText = document.getElementById('meaningText');
     const wordCounter = document.getElementById('wordCounter');
-    // Cập nhật word counter
-    wordCounter.classList.remove('correct-pinyin2', 'incorrect-pinyin2');
-    pinyinTooltip.classList.remove('correct-pinyin', 'incorrect-pinyin');
-
-    // Áp dụng class mới
-    if (isCorrect) {
-        wordCounter.classList.add('correct-pinyin2');
-        pinyinTooltip.classList.add('correct-pinyin');
-    } else {
-        wordCounter.classList.add('incorrect-pinyin2');
-        pinyinTooltip.classList.add('incorrect-pinyin');
-    }
 
     // Thiết lập tooltip dựa trên chế độ
     if (listenWriteMode) {
@@ -26466,8 +27457,9 @@ function showAnswerFeedback(currentWord, isCorrect) {
         }, { once: true });
     }
 
-
-
+    // Cập nhật word counter
+    wordCounter.classList.remove('incorrect-pinyin2');
+    wordCounter.classList.add(isCorrect ? 'correct-pinyin2' : 'incorrect-pinyin2');
 }
 
 function handleNoPinyinLeft(currentWord, targetChar) {
@@ -26681,16 +27673,15 @@ function createParticle(container, colors, isMain = true) {
 
     container.appendChild(particle);
 }
-
+// ========== HÀM CHUYỂN TỪ TIẾP THEO ========== //
 function nextWord(isSkipped) {
     if (remainingWords.length === 0) {
         endGame();
         return;
     } 
-
     currentDisplayedWord = null;
     clearInterval(wordTimer);
-
+    
     const bonusTime = isSkipped ? wrongBonusTime : correctBonusTime;
     timeLeft = Math.min(timeLeft + bonusTime, timePerWord); // Giữ nguyên thời gian tối đa
     
@@ -26716,7 +27707,7 @@ function nextWord(isSkipped) {
     }
     // Phần còn lại giữ nguyên
     totalWordsAttempted++;
-    updateWordCounter();
+    
 
   const targetChar = document.getElementById('targetCharacter');
 
@@ -26734,7 +27725,7 @@ function nextWord(isSkipped) {
     currentWordIndex = 0;
     nextWordIndex = remainingWords.length > 1 ? 1 : 0;
     updatePreview();
-    // Hiệu ứng chuyển từ
+    updateWordCounter();
     document.getElementById('targetCharacter').classList.add('word-transition');
 
     setTimeout(() => {
@@ -26894,7 +27885,6 @@ function speakWithEffect(text) {
 }
 document.addEventListener('DOMContentLoaded', function() {
 loadDataFromStorage();
-initLessonSelect();
 renderLessonSidebar();
 updatePinyinBoxes();
 loadTimeSettings();
@@ -26904,6 +27894,7 @@ ensureExampleField();
 initInputHeightSlider();
 initPinyinToneHandlers();
 loadVoices();
+loadWordStatsFromStorage();
     window.speechSynthesis.onvoiceschanged = loadVoices;
     // Đảm bảo voices được tải xong trước khi gọi speak
 function waitForVoices() {
@@ -26918,19 +27909,6 @@ function waitForVoices() {
         }
     });
 }
-// Sự kiện đóng từ điển từ bulk panel
-document.getElementById('closeDictionaryFromBulk').addEventListener('click', function() {
-    // Đóng bulk panel
-    document.getElementById('bulkActionsPanel').classList.add('hidden');
-    
-    // Đóng toàn bộ modal từ điển
-    document.getElementById('dictionaryModal').style.display = 'none';
-    
-    // Reset selected words
-    selectedWords = [];
-    updateBulkActionsPanel();
-});
-
 const autoPronounceCheckbox = document.getElementById('autoPronounce');
 const listenWriteCheckbox = document.getElementById('listenWriteMode');
 
@@ -27187,7 +28165,7 @@ function processBulkAdd() {
     const chinese = parts[0];
     const pinyin = parts[1] || ''; // SỬA: Đảm bảo không bị undefined
     const meaning = parts[2];
-    const example = parts[3] ? parts[3].split(' - ')[0].trim() : '';
+    const example = parts[3] || '';
 
     // Kiểm tra dữ liệu bắt buộc
     if (!chinese) {
@@ -27365,17 +28343,14 @@ document.getElementById('closeAddWordModal').addEventListener('click', function(
   document.getElementById('addWordModal').style.display = 'none';
   resetAddWordForm();
 });
-function initLessonSelect() {
-    const lessonSelect = document.getElementById('lessonSelect');
-    if (!lessonSelect || lessonSelect.children.length > 0) return; // Đã có option thì không chạy lại
-    
-    lessons.forEach(lesson => {
-        const option = document.createElement('option');
-        option.value = lesson.id;
-        option.textContent = lesson.title;
-        lessonSelect.appendChild(option);
-    });
-}
+// Khởi tạo dropdown chọn bài học
+const lessonSelect = document.getElementById('lessonSelect');
+lessons.forEach(lesson => {
+const option = document.createElement('option');
+option.value = lesson.id;
+option.textContent = lesson.title;
+lessonSelect.appendChild(option);
+});
 
 document.getElementById('addWordBtn').addEventListener('click', function() {
 document.getElementById('addWordModal').style.display = 'flex';
@@ -27623,7 +28598,9 @@ function loadTimeSettings() {
   const savedSettings = localStorage.getItem('timeSettings');
   if (savedSettings) {
     try {
+
       const settings = JSON.parse(savedSettings);
+      masteryThreshold = settings.masteryThreshold || 30;
       timePerWord = settings.timePerWord || 30; 
       correctBonusTime = settings.correctBonusTime || 15;
       wrongBonusTime = settings.wrongBonusTime || 10;
@@ -27662,7 +28639,8 @@ function loadTimeSettings() {
       document.getElementById('preSpeak').checked = false;
        }
        document.getElementById('autoPronounce').checked = isSoundOn; 
-            document.getElementById('listenWriteMode').checked = listenWriteMode;
+       document.getElementById('masteryThreshold').value = masteryThreshold;
+    document.getElementById('listenWriteMode').checked = listenWriteMode;
       document.getElementById('showRewardMessage').checked = showRewardMessage;
       document.getElementById('showFirework').checked = showFirework;
       document.getElementById('timePerWord').value = timePerWord; 
@@ -27700,8 +28678,11 @@ document.getElementById('openCatalogBtn').style.display = 'block';
 document.getElementById('dictionarySection').style.display = 'block';
 document.getElementById('lessonSelection').style.display = 'block';
 document.getElementById('gameScreen').style.display = 'none';
+document.getElementById('helpBtn').style.display = 'block';
 document.getElementById('darkModeToggle').style.display = 'block';
 document.getElementById('wordCounter').style.display = 'none';
+document.getElementById('wordWriteCount').style.display = 'none';
+document.getElementById('correctStreakCounter').style.display = 'none';
 
 document.querySelectorAll('.pinyin-box').forEach(box => {
 box.classList.remove('used');
@@ -27723,6 +28704,8 @@ document.addEventListener('keydown', function(e) {
             
             // Sau đó mới đóng các modal
             document.getElementById('wordCounter').style.display = 'none';
+            document.getElementById('wordWriteCount').style.display = 'none';
+document.getElementById('correctStreakCounter').style.display = 'none';
             document.getElementById('pinyinIndicator').style.display = 'none';
             document.getElementById('dictionaryModal').style.display = 'none';
             document.getElementById('addWordModal').style.display = 'none';
@@ -27774,12 +28757,5 @@ startGame();
 
 })
   </script>
-
-
-        </code>
-    </div>
-
-    </script>
-
 
 </div></body></html>
