@@ -4747,8 +4747,24 @@ body.dark-mode .streak-container {
     </style>
 </head>
 <body>
-
+  
 <script>
+  // Tự động ẩn thanh địa chỉ trên mobile
+  (function() {
+    // Kiểm tra nếu là thiết bị di động
+    if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      // Cuộn 1px sau khi trang tải
+      window.addEventListener('load', function() {
+        window.scrollTo(0, 1);
+      });
+      // Khi người dùng chạm vào màn hình, cuộn thêm 1px để duy trì ẩn
+      document.body.addEventListener('touchstart', function() {
+        if (window.scrollY < 2) {
+          window.scrollTo(0, 1);
+        }
+      });
+    }
+  })();
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('keydown', function(event) {
     if (event.keyCode === 123) {
