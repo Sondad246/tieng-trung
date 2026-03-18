@@ -1618,11 +1618,11 @@ animation: slideOut 0.6s ease-in forwards;
 }
 
 .time-progress {
-height: 100%;
-width: 0%;
-background: linear-gradient(90deg, #2ecc71, #27ae60);
-border-radius: 6px;
-transition: width 0.1s linear;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    border-radius: 6px;
+    will-change: width, background;
 }
 
 .dictionary-section {
@@ -25689,9 +25689,6 @@ let timePerWord = 30;
 let timeLeft; 
 let wordTimer; 
 let showExampleInstead = false;
-// Biến lưu giá trị độ cao
-
-// Hàm tạo màu tự động dựa trên ID bài học
 function generateColorForLesson(lessonId) {
   const colors = [
     '#3498db', '#3498db', '#3498db', '#3498db', '#3498db',
@@ -26024,7 +26021,7 @@ function resetGameState() {
 
 
 
-    clearInterval(wordTimer);
+    cancelAnimationFrame(wordTimer);
     timeLeft = timePerWord;
     document.getElementById('timeProgress').style.width = '100%';
     document.getElementById('timeProgress').style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
@@ -26282,18 +26279,9 @@ timeBarContainer.classList.remove('hide');
 timeProgress.style.width = '0%';
 
 // Reset interval thời gian
-    clearInterval(wordTimer); // Xóa timer cũ nếu có
+    cancelAnimationFrame(wordTimer);// Xóa timer cũ nếu có
     timeLeft = timePerWord;
-    updateTimeBar();
-    wordTimer = setInterval(() => {
-  timeLeft -= 0.01; // Giảm 0.01 giây mỗi lần (10ms)
-        updateTimeBar();
-        
-        if (timeLeft <= 0) {
-            clearInterval(wordTimer);
-            handleTimeOut();
-        }
-    }, 10);
+startWordTimer(0);
 
 // Xáo trộn từ nếu cần
 if (totalWordsAttempted === 0 || remainingWords.length > 1) {
@@ -26328,25 +26316,77 @@ document.getElementById('dictionaryModal').style.display = 'flex';
 renderDictionary();
 
 });
+// --- ĐOẠN CODE XỬ LÝ THỜI GIAN MƯỢT MÀ ---
+let lastFrameTime = 0;
+
+function startWordTimer(bonusTime = 0) {
+    // Xóa vòng lặp cũ nếu có
+    if (wordTimer) {
+        cancelAnimationFrame(wordTimer);
+    }
+
+    // Cộng thêm thời gian hoặc reset về ban đầu
+    if (bonusTime > 0) {
+        timeLeft = Math.min(timeLeft + bonusTime, timePerWord);
+    } else {
+        timeLeft = timePerWord;
+    }
+
+    lastFrameTime = Date.now();
+
+    // Vòng lặp tối ưu bằng requestAnimationFrame
+    function timerLoop() {
+        if (!gameActive) return;
+
+        const currentTime = Date.now();
+        const deltaTime = (currentTime - lastFrameTime) / 1000; // Đổi ra giây
+        lastFrameTime = currentTime;
+
+        timeLeft -= deltaTime; // Trừ đi chính xác số thời gian thực tế đã trôi qua
+
+        updateTimeBar();
+
+        if (timeLeft <= 0) {
+            timeLeft = 0;
+            updateTimeBar(); // Cập nhật lần cuối cho về 0%
+            handleTimeOut();
+        } else {
+            wordTimer = requestAnimationFrame(timerLoop);
+        }
+    }
+
+    wordTimer = requestAnimationFrame(timerLoop);
+}
 
 function updateTimeBar() {
     const progress = (timeLeft / timePerWord) * 100;
     const timeProgress = document.getElementById('timeProgress');
     
-    timeProgress.style.transition = 'width 0.01s linear';
-    timeProgress.style.width = `${progress}%`;
+    // Gán trực tiếp width không cần qua CSS transition nữa
+    timeProgress.style.width = `${Math.max(0, progress)}%`;
     
-    if (progress <= 20){
-        timeProgress.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
-        timeProgress.style.animation = 'blink 0.3s infinite';
+    // Tối ưu hóa việc đổi màu: Chỉ đổi khi cần thiết để tránh giật lag
+    if (progress <= 20) {
+        if (timeProgress.dataset.state !== 'danger') {
+            timeProgress.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+            timeProgress.style.animation = 'blink 0.3s infinite';
+            timeProgress.dataset.state = 'danger';
+        }
     } else if (progress <= 40) {
-       timeProgress.style.background = 'linear-gradient(90deg, #ffd700, #ffa500)';
-       timeProgress.style.animation = 'none';
+        if (timeProgress.dataset.state !== 'warning') {
+            timeProgress.style.background = 'linear-gradient(90deg, #ffd700, #ffa500)';
+            timeProgress.style.animation = 'none';
+            timeProgress.dataset.state = 'warning';
+        }
     } else {
-        timeProgress.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
-        timeProgress.style.animation = 'none';
+        if (timeProgress.dataset.state !== 'normal') {
+            timeProgress.style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+            timeProgress.style.animation = 'none';
+            timeProgress.dataset.state = 'normal';
+        }
     }
 }
+// --- KẾT THÚC ĐOẠN CODE XỬ LÝ THỜI GIAN ---
 
 function handleTimeOut() {
     if (!gameActive) return;
@@ -27847,7 +27887,7 @@ if (!gameActive) return;
   updateHighScore(correctAnswers);
 gameActive = false;
 toggleHeightSlider(false);
-clearInterval(wordTimer);
+cancelAnimationFrame(wordTimer);
 // Ẩn các phần tử không cần thiết
     // Sửa cách ẩn các phần tử
     document.getElementById('wordCounter').style.display = 'none';
@@ -28567,22 +28607,10 @@ function nextWord(isSkipped) {
         return;
     } 
     currentDisplayedWord = null;
-    clearInterval(wordTimer);
     
-    const bonusTime = isSkipped ? wrongBonusTime : correctBonusTime;
-    timeLeft = Math.min(timeLeft + bonusTime, timePerWord); // Giữ nguyên thời gian tối đa
-    
-    updateTimeBar();
+const bonusTime = isSkipped ? wrongBonusTime : correctBonusTime;
+startWordTimer(bonusTime); // Bắt đầu đếm và cộng dồn thời gian
 
-    wordTimer = setInterval(() => {
-        timeLeft -= 0.01; // Giảm 0.01 giây
-        updateTimeBar();
-        
-        if (timeLeft <= 0) {
-            clearInterval(wordTimer);
-            handleTimeOut();
-        }
-    }, 10);
     if (isSkipped) {
         if (!wrongWords.some(w => w.chinese === remainingWords[currentWordIndex].chinese)) {
                   wrongWords.push({
